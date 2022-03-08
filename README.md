@@ -4,7 +4,7 @@
 ![Commits since latest release](https://img.shields.io/github/commits-since/redmar-van-den-berg/test-umi-deduplication/latest)
 
 # test-umi-deduplication
-Example of a snakemake project
+A pipeline to test different methods of UMI deduplication
 
 ## Installation
 Download the repository from github
