@@ -1,15 +1,15 @@
-[![Continuous Integration](https://github.com/Redmar-van-den-Berg/snakemake-project/actions/workflows/ci.yml/badge.svg)](https://github.com/Redmar-van-den-Berg/snakemake-project/actions/workflows/ci.yml)
+[![Continuous Integration](https://github.com/Redmar-van-den-Berg/test-umi-deduplication/actions/workflows/ci.yml/badge.svg)](https://github.com/Redmar-van-den-Berg/test-umi-deduplication/actions/workflows/ci.yml)
 [![PEP compatible](http://pepkit.github.io/img/PEP-compatible-green.svg)](http://pepkit.github.io)
-![GitHub release](https://img.shields.io/github/v/release/redmar-van-den-berg/snakemake-project)
-![Commits since latest release](https://img.shields.io/github/commits-since/redmar-van-den-berg/snakemake-project/latest)
+![GitHub release](https://img.shields.io/github/v/release/redmar-van-den-berg/test-umi-deduplication)
+![Commits since latest release](https://img.shields.io/github/commits-since/redmar-van-den-berg/test-umi-deduplication/latest)
 
-# snakemake-project
+# test-umi-deduplication
 Example of a snakemake project
 
 ## Installation
 Download the repository from github
 ```bash
-git clone https://github.com/Redmar-van-den-Berg/snakemake-project.git
+git clone https://github.com/Redmar-van-den-Berg/test-umi-deduplication.git
 ```
 
 Install and activate the
@@ -17,7 +17,7 @@ Install and activate the
 environment.
 ```bash
 conda env create --file environment.yml
-conda activate snakemake-project
+conda activate test-umi-deduplication
 ```
 
 ## Settings
@@ -26,7 +26,7 @@ of priority.
 1. Flags passed to snakemake using `--config`, or in the specified
    `--configfile`.
 2. Setting specified in the PEP project configuration, under the key
-   `snakemake-pipeline`
+   `test-umi-deduplication`
 3. The default settings for the pipeline, as specified in the `common.smk` file
 
 
