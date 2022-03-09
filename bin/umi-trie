@@ -8,9 +8,8 @@ import dnaio
 import xopen
 
 logging.basicConfig(
-        format='%(asctime)s %(levelname)-8s %(message)s',
+        format='%(message)s',
         level=logging.INFO,
-        datefmt='%Y-%m-%d %H:%M:%S'
 )
 
 
@@ -53,8 +52,10 @@ def main(args):
             d = duplicate_reads
             logging.info(f'Parsed {u+d} reads ({u} unique, {d} duplicate)')
 
+    total_reads = unique_reads + duplicate_reads
+    perc_unique = round((unique_reads/total_reads)*100,4)
     logging.info(f'Duplicate reads: {duplicate_reads}')
-    logging.info(f'Left after removing perfect duplicates: {unique_reads}')
+    logging.info(f'Left after removing perfect duplicates: {unique_reads} ({perc_unique}%).')
 
 
 def output_file_name(infile, folder):
