@@ -11,6 +11,7 @@
   stdout:
     contains:
       - sample1/concat/forward.fastq.gz
+      - sample1/umi-trie/forward_dedup.fastq.gz
 
 - name: dry-run-subsamples
   tags:
@@ -26,6 +27,8 @@
     contains:
       - sample1/concat/forward.fastq.gz
       - sample2/concat/forward.fastq.gz
+      - sample1/umi-trie/forward_dedup.fastq.gz
+      - sample2/umi-trie/forward_dedup.fastq.gz
     contains_regex:
       # Test if specifying multiple fastq files using subsamples is handled
       - "cp tests/data/micro_R1.fq.gz tests/data/micro_R1.fq.gz sample1/concat/forward.fastq.gz"

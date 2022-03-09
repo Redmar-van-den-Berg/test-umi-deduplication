@@ -18,7 +18,8 @@ config = default
 rule all:
     input:
         concat=expand(
-            "{sample}/concat/forward.fastq.gz", sample=pep.sample_table["sample_name"]
+            "{sample}/umi-trie/forward_dedup.fastq.gz",
+            sample=pep.sample_table["sample_name"],
         ),
 
 
@@ -43,4 +44,30 @@ rule concat:
         cp {input.forw} {output.forw} || cat {input.forw} > {output.forw}
         cp {input.rev} {output.rev} || cat {input.rev} > {output.rev}
         cp {input.umi} {output.umi} || cat {input.umi} > {output.umi}
+        """
+
+
+rule umi_trie:
+    """Run umi-trie on the fastq files"""
+    input:
+        forw=rules.concat.output.forw,
+        rev=rules.concat.output.rev,
+        umi=rules.concat.output.umi,
+        umi_trie=srcdir("bin/umi-trie"),
+    output:
+        forw="{sample}/umi-trie/forward_dedup.fastq.gz",
+        rev="{sample}/umi-trie/reverse_dedup.fastq.gz",
+        umi="{sample}/umi-trie/umi_dedup.fastq.gz",
+    log:
+        "log/{sample}-umi-trie.txt",
+    container:
+        containers["debian"]
+    shell:
+        """
+        folder=$(dirname {output.forw})
+        mkdir -p $folder
+
+        {input.umi_trie} \
+            -f $folder \
+            {input.forw} {input.rev} {input.umi} 2> {log}
         """
