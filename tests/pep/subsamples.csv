@@ -1,4 +1,3 @@
-sample_name,protocol,forward,reverse
-sample1,WGS,tests/data/sample1_R1.fastq.gz,tests/data/sample1_R2.fastq.gz
-sample1,WGS,tests/data/sample2_R1.fastq.gz,tests/data/sample2_R2.fastq.gz
-sample3,WGS,tests/data/sample3_R1.fastq.gz,tests/data/sample3_R2.fastq.gz
+sample_name,forward,reverse,umi
+sample1,tests/data/micro_R1.fq.gz,tests/data/micro_R2.fq.gz,tests/data/micro_R3.fq.gz
+sample1,tests/data/micro_R1.fq.gz,tests/data/micro_R2.fq.gz,tests/data/micro_R3.fq.gz
