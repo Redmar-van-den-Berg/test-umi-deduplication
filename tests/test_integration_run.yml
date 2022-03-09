@@ -9,6 +9,7 @@
       --latency-wait 120
       --use-singularity --singularity-args ' --cleanenv --bind /tmp'
       --config pepfile=tests/pep/project_config.yaml
+      reference=tests/data/reference/ref.fa
       --snakefile Snakefile
   files:
     - path: sample1/concat/forward.fastq.gz
@@ -20,6 +21,7 @@
     - path: log/sample1-umi-trie.txt
       contains:
         - Left after removing perfect duplicates
+    - path: sample1/align/sample1.bam
 
 - name: integration-subsamples
   tags:
@@ -32,9 +34,12 @@
       --latency-wait 120
       --use-singularity --singularity-args ' --cleanenv --bind /tmp'
       --config pepfile=tests/pep/project_subsamples.yaml
+      reference=tests/data/reference/ref.fa
       --snakefile Snakefile
   files:
     - path: sample1/concat/forward.fastq.gz
     - path: sample2/concat/forward.fastq.gz
     - path: sample1/umi-trie/forward_dedup.fastq.gz
     - path: sample2/umi-trie/forward_dedup.fastq.gz
+    - path: sample1/align/sample1.bam
+    - path: sample2/align/sample2.bam

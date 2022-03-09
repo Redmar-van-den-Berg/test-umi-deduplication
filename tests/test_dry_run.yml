@@ -7,11 +7,15 @@
       --reason
       --printshellcmds
       --config pepfile=tests/pep/project_config.yaml
+      reference=tests/data/reference/ref.fa
       --snakefile Snakefile
   stdout:
     contains:
       - sample1/concat/forward.fastq.gz
       - sample1/umi-trie/forward_dedup.fastq.gz
+      - sample1/align/sample1.sam
+      - sample1/align/sample1.bam
+      - sample1/align/sample1.bai
 
 - name: dry-run-subsamples
   tags:
@@ -22,6 +26,7 @@
       --reason
       --printshellcmds
       --config pepfile=tests/pep/project_subsamples.yaml
+      reference=tests/data/reference/ref.fa
       --snakefile Snakefile
   stdout:
     contains:
@@ -29,6 +34,8 @@
       - sample2/concat/forward.fastq.gz
       - sample1/umi-trie/forward_dedup.fastq.gz
       - sample2/umi-trie/forward_dedup.fastq.gz
+      - sample1/align/sample1.bam
+      - sample2/align/sample2.bam
     contains_regex:
       # Test if specifying multiple fastq files using subsamples is handled
       - "cp tests/data/micro_R1.fq.gz tests/data/micro_R1.fq.gz sample1/concat/forward.fastq.gz"

@@ -21,6 +21,10 @@ rule all:
             "{sample}/umi-trie/forward_dedup.fastq.gz",
             sample=pep.sample_table["sample_name"],
         ),
+        bam=expand(
+            "{sample}/align/{sample}.bam",
+            sample=pep.sample_table["sample_name"],
+        ),
 
 
 rule concat:
@@ -70,4 +74,82 @@ rule umi_trie:
         {input.umi_trie} \
             -f $folder \
             {input.forw} {input.rev} {input.umi} 2> {log}
+        """
+
+
+rule index_reference:
+    input:
+        ref=config["reference"],
+    output:
+        directory("gmap_index"),
+    params:
+        "reference",
+    log:
+        "log/index_reference.txt",
+    container:
+        containers["gsnap"]
+    shell:
+        """
+        # Clear the existing folder
+        rm -rf {output}
+        mkdir {output}
+
+        gmap_build -D {output} -d {params} {input.ref} 2>&1 > {log}
+        """
+
+
+rule align_vars:
+    input:
+        fq1=rules.concat.output.forw,
+        fq2=rules.concat.output.rev,
+        index=rules.index_reference.output,
+    output:
+        sam="{sample}/align/{sample}.sam",
+    params:
+        rg_sample=lambda x: "{sample}",
+        db_name="reference",
+    threads: 8
+    log:
+        "log/{sample}_align_vars.txt",
+    container:
+        containers["gsnap"]
+    shell:
+        """
+        gsnap \
+            --dir {input.index} \
+            --db {params.db_name} \
+            --batch 4 \
+            --nthreads {threads} \
+            --novelsplicing 1 \
+            --npaths 1 \
+            --quiet-if-excessive \
+            --read-group-name={params.rg_sample} \
+            --read-group-id={params.rg_sample} \
+            --format sam \
+            --gunzip {input.fq1} {input.fq2} > {output.sam} 2>{log}
+        """
+
+
+rule sort_bamfile:
+    input:
+        sam=rules.align_vars.output.sam,
+    output:
+        bam="{sample}/align/{sample}.bam",
+        bai="{sample}/align/{sample}.bai",
+    params:
+        tmp=temp("tmp"),
+    log:
+        "log/{sample}_sort_bamfile.txt",
+    container:
+        containers["picard"]
+    shell:
+        """
+        mkdir -p {params.tmp}
+        picard -Xmx4G SortSam\
+            I={input.sam} \
+            O={output.bam} \
+            SORT_ORDER=coordinate \
+            VALIDATION_STRINGENCY=SILENT \
+            CREATE_INDEX=true \
+            TMP_DIR={params.tmp} 2>&1 > {log}
         """

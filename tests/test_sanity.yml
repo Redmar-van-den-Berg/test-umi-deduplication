@@ -20,6 +20,7 @@
     snakemake
       --lint
       --config pepfile=tests/pep/project_config.yaml
+      reference=tests/data/reference/ref.fa
 
 - name: sanity-snakefmt
   tags:

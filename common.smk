@@ -1,6 +1,8 @@
 containers = {
     "debian": "docker://debian:latest",
     "dnaio": "docker://quay.io/biocontainers/dnaio:0.7.1--py39hbf8eff0_1",
+    "gsnap": "docker://quay.io/biocontainers/gmap:2014.12.23--pl5.22.0_4",
+    "picard": "docker://quay.io/biocontainers/picard:2.20.5--0",
 }
 
 default = {"umi-trie": srcdir("bin/umi-trie")}
