@@ -1,9 +1,9 @@
-containers = {"debian": "docker://debian:latest"}
-default = {"setting1": "common.smk", "setting2": "common.smk", "setting3": "common.smk"}
+containers = {
+    "debian": "docker://debian:latest",
+    "dnaio": "docker://quay.io/biocontainers/dnaio:0.7.1--py39hbf8eff0_1",
+}
 
-
-def get_outfile():
-    return "outputfile.txt"
+default = {"umi-trie": srcdir("bin/umi-trie")}
 
 
 def get_fastq(wildcards, column):

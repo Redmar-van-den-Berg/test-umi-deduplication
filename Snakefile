@@ -53,7 +53,7 @@ rule umi_trie:
         forw=rules.concat.output.forw,
         rev=rules.concat.output.rev,
         umi=rules.concat.output.umi,
-        umi_trie=srcdir("bin/umi-trie"),
+        umi_trie=config["umi-trie"],
     output:
         forw="{sample}/umi-trie/forward_dedup.fastq.gz",
         rev="{sample}/umi-trie/reverse_dedup.fastq.gz",
@@ -61,7 +61,7 @@ rule umi_trie:
     log:
         "log/{sample}-umi-trie.txt",
     container:
-        containers["debian"]
+        containers["dnaio"]
     shell:
         """
         folder=$(dirname {output.forw})

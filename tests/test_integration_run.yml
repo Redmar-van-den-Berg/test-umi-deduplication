@@ -19,7 +19,7 @@
     - path: sample1/umi-trie/umi_dedup.fastq.gz
     - path: log/sample1-umi-trie.txt
       contains:
-        - Left after removing nonperfect duplicates
+        - Left after removing perfect duplicates
 
 - name: integration-subsamples
   tags:
