@@ -17,7 +17,9 @@ config = default
 
 rule all:
     input:
-        concat=expand("{sample}/concat/forward.fastq.gz", sample=pep.sample_table["sample_name"]),
+        concat=expand(
+            "{sample}/concat/forward.fastq.gz", sample=pep.sample_table["sample_name"]
+        ),
 
 
 rule concat:
@@ -31,7 +33,7 @@ rule concat:
         rev="{sample}/concat/reverse.fastq.gz",
         umi="{sample}/concat/umi.fastq.gz",
     log:
-        "log/{sample}_concat.txt"
+        "log/{sample}_concat.txt",
     container:
         containers["debian"]
     shell:

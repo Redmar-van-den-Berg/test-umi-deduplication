@@ -16,11 +16,14 @@ def get_fastq(wildcards, column):
     else:
         return fastq
 
+
 def get_forward(wildcards):
     return get_fastq(wildcards, "forward")
 
+
 def get_reverse(wildcards):
     return get_fastq(wildcards, "reverse")
+
 
 def get_umi(wildcards):
     return get_fastq(wildcards, "umi")
