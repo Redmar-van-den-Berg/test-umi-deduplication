@@ -23,6 +23,7 @@
         - Left after removing perfect duplicates
     - path: sample1/align/sample1.bam
     - path: sample1/sample1.umi.bam
+    - path: sample1/sample1.umi.bam.bai
 
 - name: integration-subsamples
   tags:
@@ -44,3 +45,5 @@
     - path: sample2/umi-trie/forward_dedup.fastq.gz
     - path: sample1/align/sample1.bam
     - path: sample2/align/sample2.bam
+    - path: sample2/sample2.umi.bam
+    - path: sample2/sample2.umi.bam.bai

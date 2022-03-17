@@ -161,15 +161,18 @@ rule add_umi:
         bam=rules.sort_bamfile.output.bam,
         add_umi=srcdir("scripts/bam-add-umi.py"),
     output:
-        "{sample}/{sample}.umi.bam",
+        bam="{sample}/{sample}.umi.bam",
+        bai="{sample}/{sample}.umi.bam.bai",
     log:
         "log/{sample}_add_umi.txt",
     container:
-        "docker://quay.io/biocontainers/umi_tools:1.1.1--py38h0213d0e_1"
+        containers["umi-tools"]
     shell:
         """
         python3 {input.add_umi} \
                 --umi-files {input.umi} \
                 --bam-file {input.bam} \
-                --output-file {output} 2> {log}
+                --output-file {output.bam} 2> {log}
+
+        python3 -c "import pysam; pysam.index('{output.bam}')"
         """
