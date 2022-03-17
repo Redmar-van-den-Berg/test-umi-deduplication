@@ -19,12 +19,12 @@ rule all:
     input:
         concat=expand(
             "{sample}/umi-trie/forward_dedup.fastq.gz",
-            sample=pep.sample_table["sample_name"],
+            sample=pep.sample_table.sample_name,
         ),
         bam=expand(
-            "{sample}/{sample}.umi.bam",
-            sample=pep.sample_table["sample_name"],
+            "{sample}/{sample}.umi.dedup.bam", sample=pep.sample_table.sample_name
         ),
+        #stats="umi-stats.tsv",
 
 
 rule concat:
@@ -175,4 +175,42 @@ rule add_umi:
                 --output-file {output.bam} 2> {log}
 
         python3 -c "import pysam; pysam.index('{output.bam}')"
+        """
+
+
+rule umi_dedup:
+    input:
+        bam=rules.add_umi.output.bam,
+        bai=rules.add_umi.output.bai,
+    output:
+        bam="{sample}/{sample}.umi.dedup.bam",
+    log:
+        "log/{sample}_umi_dedup.log",
+    container:
+        containers["umi-tools"]
+    shell:
+        """
+        mkdir -p tmp
+        export TMPDIR=tmp
+
+        umi_tools dedup \
+                --stdin={input.bam} \
+                --stdout={output.bam} > {log}
+        """
+
+
+rule parse_umi_log:
+    input:
+        logs=expand("log/{sample}_umi_dedup.log", sample=pep.sample_table.sample_name),
+        parse_umi_log=srcdir("scripts/parse-umi-log.py"),
+    output:
+        "umi-stats.tsv",
+    log:
+        "log/parse_umi_log.txt",
+    container:
+        containers["umi-tools"]
+    shell:
+        """
+        python3 {input.parse_umi_log} \
+                --umi-logs {input.logs} > {output}
         """
