@@ -22,7 +22,7 @@ rule all:
             sample=pep.sample_table["sample_name"],
         ),
         bam=expand(
-            "{sample}/align/{sample}.bam",
+            "{sample}/{sample}.umi.bam",
             sample=pep.sample_table["sample_name"],
         ),
 
@@ -152,4 +152,24 @@ rule sort_bamfile:
             VALIDATION_STRINGENCY=SILENT \
             CREATE_INDEX=true \
             TMP_DIR={params.tmp} 2>&1 > {log}
+        """
+
+
+rule add_umi:
+    input:
+        umi=rules.concat.output.umi,
+        bam=rules.sort_bamfile.output.bam,
+        add_umi=srcdir("scripts/bam-add-umi.py"),
+    output:
+        "{sample}/{sample}.umi.bam",
+    log:
+        "log/{sample}_add_umi.txt",
+    container:
+        "docker://quay.io/biocontainers/umi_tools:1.1.1--py38h0213d0e_1"
+    shell:
+        """
+        python3 {input.add_umi} \
+                --umi-files {input.umi} \
+                --bam-file {input.bam} \
+                --output-file {output} 2> {log}
         """

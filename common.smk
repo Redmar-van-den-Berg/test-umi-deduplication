@@ -3,6 +3,7 @@ containers = {
     "dnaio": "docker://quay.io/biocontainers/dnaio:0.7.1--py39hbf8eff0_1",
     "gsnap": "docker://quay.io/biocontainers/gmap:2014.12.23--pl5.22.0_4",
     "picard": "docker://quay.io/biocontainers/picard:2.20.5--0",
+    "umi-tools": "docker://quay.io/biocontainers/umi_tools:1.1.1--py38h0213d0e_1",
 }
 
 default = {"umi-trie": srcdir("bin/umi-trie")}

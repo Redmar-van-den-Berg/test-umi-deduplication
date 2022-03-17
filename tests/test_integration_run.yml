@@ -22,6 +22,7 @@
       contains:
         - Left after removing perfect duplicates
     - path: sample1/align/sample1.bam
+    - path: sample1/sample1.umi.bam
 
 - name: integration-subsamples
   tags:
