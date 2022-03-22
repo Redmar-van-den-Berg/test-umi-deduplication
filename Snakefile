@@ -24,7 +24,7 @@ rule all:
         bam=expand(
             "{sample}/{sample}.umi.dedup.bam", sample=pep.sample_table.sample_name
         ),
-        #stats="umi-stats.tsv",
+        stats="umi-stats.tsv",
 
 
 rule concat:
@@ -98,10 +98,34 @@ rule index_reference:
         """
 
 
+rule add_umi:
+    input:
+        forw=rules.concat.output.forw,
+        umi=rules.concat.output.umi,
+        rev=rules.concat.output.rev,
+        add_umi=srcdir("scripts/add-umi.py"),
+    output:
+        forw="{sample}/{sample}.umi.forward.fastq.gz",
+        rev="{sample}/{sample}.umi.reverse.fastq.gz",
+    log:
+        "log/{sample}_add_umi.txt",
+    container:
+        containers["dnaio"]
+    shell:
+        """
+        python3 {input.add_umi} \
+                {input.forw} \
+                {input.umi} \
+                {input.rev} \
+                --forward-out {output.forw} \
+                --reverse-out {output.rev} 2> {log}
+        """
+
+
 rule align_vars:
     input:
-        fq1=rules.concat.output.forw,
-        fq2=rules.concat.output.rev,
+        fq1=rules.add_umi.output.forw,
+        fq2=rules.add_umi.output.rev,
         index=rules.index_reference.output,
     output:
         sam="{sample}/align/{sample}.sam",
@@ -155,33 +179,10 @@ rule sort_bamfile:
         """
 
 
-rule add_umi:
-    input:
-        umi=rules.concat.output.umi,
-        bam=rules.sort_bamfile.output.bam,
-        add_umi=srcdir("scripts/bam-add-umi.py"),
-    output:
-        bam="{sample}/{sample}.umi.bam",
-        bai="{sample}/{sample}.umi.bam.bai",
-    log:
-        "log/{sample}_add_umi.txt",
-    container:
-        containers["umi-tools"]
-    shell:
-        """
-        python3 {input.add_umi} \
-                --umi-files {input.umi} \
-                --bam-file {input.bam} \
-                --output-file {output.bam} 2> {log}
-
-        python3 -c "import pysam; pysam.index('{output.bam}')"
-        """
-
-
 rule umi_dedup:
     input:
-        bam=rules.add_umi.output.bam,
-        bai=rules.add_umi.output.bai,
+        bam=rules.sort_bamfile.output.bam,
+        bai=rules.sort_bamfile.output.bai,
     output:
         bam="{sample}/{sample}.umi.dedup.bam",
     log:

@@ -16,7 +16,7 @@
       - sample1/align/sample1.sam
       - sample1/align/sample1.bam
       - sample1/align/sample1.bai
-      - sample1/sample1.umi.bam
+      - sample1/sample1.umi.forward.fastq.gz
       - sample1/sample1.umi.dedup.bam
 
 - name: dry-run-subsamples
@@ -38,8 +38,8 @@
       - sample2/umi-trie/forward_dedup.fastq.gz
       - sample1/align/sample1.bam
       - sample2/align/sample2.bam
-      - sample2/sample2.umi.bam
       - sample2/sample2.umi.dedup.bam
+      - sample2/sample2.umi.forward.fastq.gz
     contains_regex:
       # Test if specifying multiple fastq files using subsamples is handled
       - "cp tests/data/micro_R1.fq.gz tests/data/micro_R1.fq.gz sample1/concat/forward.fastq.gz"
