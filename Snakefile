@@ -41,7 +41,7 @@ rule umi_trie:
         forw=rules.concat.output.forw,
         rev=rules.concat.output.rev,
         umi=rules.concat.output.umi,
-        umi_trie=config["umi-trie"],
+        umi_trie=config["umi_trie"],
     output:
         forw="{sample}/umi-trie/forward_dedup.fastq.gz",
         rev="{sample}/umi-trie/reverse_dedup.fastq.gz",

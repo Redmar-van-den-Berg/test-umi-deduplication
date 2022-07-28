@@ -6,7 +6,7 @@ containers = {
     "umi-tools": "docker://quay.io/biocontainers/umi_tools:1.1.1--py38h0213d0e_1",
 }
 
-default = {"umi-trie": srcdir("bin/umi-trie")}
+default = {"umi_trie": srcdir("bin/umi-trie")}
 
 
 pepfile: config["pepfile"]
