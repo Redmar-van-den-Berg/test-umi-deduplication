@@ -50,7 +50,6 @@ def parse(logfile):
 
     # Dict where we store the data
     data = dict()
-    data['sample_name'] = sample_name
 
     with open(logfile) as fin:
         for line in fin:
@@ -64,7 +63,7 @@ def parse(logfile):
 
             # Get the output reads
             if re.match(output_reads, line):
-                data['output_reads'] = int(spline[7])
+                data['umi_tools_output'] = int(spline[7])
 
             # Get the duplicate positions
             if re.match(dup_positions, line):
@@ -79,28 +78,49 @@ def parse(logfile):
                 data['max_umi_per_pos'] = int(spline[-1])
 
     # Calculate the percentage duplicates
-    frac_unique = data['output_reads'] / data['input_reads']
+    frac_unique = data['umi_tools_output'] / data['input_reads']
     frac_dup = round(1-frac_unique, 2)
-    data['perc_duplicates'] = frac_dup * 100
+    data['umi_tools_perc_duplicates'] = frac_dup * 100
 
     return data
 
 
+def parse_stats(logfile):
+    data = dict()
+    with open(logfile) as fin:
+        for line in fin:
+            field, value = line.strip().split(': ')
+            data[field] = int(value)
+    # Rename some fields
+    data['umi_trie_output'] = data['clusters']
+    data['umi_trie_input'] = data['usable']
+
+    frac_unique = data['clusters'] / data['usable']
+    frac_dup = round(1-frac_unique, 2)
+    data['umi_trie_perc_duplicates'] = frac_dup * 100
+    return data
+
 def main(args):
-    data = list()
-    for logfile in args.umi_logs:
+    data = dict()
+    # Read the UMI-Tools log files
+    for sample, logfile in zip(args.samples, args.umi_tools):
         results = parse(logfile)
-        data.append(results)
+        results['sample_name'] = sample
+        data[sample] = results
+
+    # Read the umi-trie stat files
+    for sample, logfile in zip(args.samples, args.umi_trie):
+        results = parse_stats(logfile)
+        data[sample].update(results)
 
 
-    header = ['sample_name', 'input_reads', 'output_reads', 'perc_duplicates',
-            'chimeric_read_pair', 'deduplicated_positions', 'mean_umi_per_pos',
-            'max_umi_per_pos']
+    header = ['sample_name', 'input_reads', 'umi_tools_output', 'umi_tools_perc_duplicates',
+            'umi_trie_input', 'umi_trie_output', 'umi_trie_perc_duplicates']
 
     print(*header, sep='\t')
 
     for sample in data:
-        print(*(sample[field] for field in header), sep='\t')
+        print(*(data[sample][field] for field in header), sep='\t')
 
 
 if __name__ == '__main__':
@@ -119,9 +139,15 @@ if __name__ == '__main__':
     parser.add_argument('--logfile', default='/dev/null',
                         # default = '{}_{}.log'.format(filename, timestamp),
                         help='File to write the logging information to')
-    parser.add_argument('--umi-logs', required=True, nargs='+',
+    parser.add_argument('--umi-tools', required=True, nargs='+',
                         help='stdout from umi_tools dedup')
+    parser.add_argument('--samples', required=True, nargs='+',
+                        help='Sample names, on order')
+    parser.add_argument('--umi-trie', required=True, nargs='+',
+                        help='stats.dat from umi-trie')
 
     arguments = parser.parse_args()
+    assert len(arguments.umi_tools) == len(arguments.samples)
+    assert len(arguments.umi_trie) == len(arguments.samples)
     init_logger(arguments)
     main(arguments)

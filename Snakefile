@@ -7,9 +7,7 @@ rule all:
             "{sample}/umi-trie/forward_dedup.fastq.gz",
             sample=samples,
         ),
-        bam=expand(
-            "{sample}/{sample}.umi.dedup.bam", sample=samples
-        ),
+        bam=expand("{sample}/{sample}.umi.dedup.bam", sample=samples),
         stats="umi-stats.tsv",
 
 
@@ -48,6 +46,7 @@ rule umi_trie:
         forw="{sample}/umi-trie/forward_dedup.fastq.gz",
         rev="{sample}/umi-trie/reverse_dedup.fastq.gz",
         umi="{sample}/umi-trie/umi_dedup.fastq.gz",
+        stats="{sample}/umi-trie/stats.dat",
     log:
         "log/{sample}-umi-trie.txt",
     container:
@@ -189,8 +188,11 @@ rule umi_dedup:
 
 rule parse_umi_log:
     input:
-        logs=expand("log/{sample}_umi_dedup.log", sample=samples),
+        umi_tools=expand("log/{sample}_umi_dedup.log", sample=samples),
+        umi_trie=expand("{sample}/umi-trie/stats.dat", sample=samples),
         parse_umi_log=srcdir("scripts/parse-umi-log.py"),
+    params:
+        samples=samples,
     output:
         "umi-stats.tsv",
     log:
@@ -200,5 +202,7 @@ rule parse_umi_log:
     shell:
         """
         python3 {input.parse_umi_log} \
-                --umi-logs {input.logs} > {output}
+                --samples {params.samples} \
+                --umi-trie {input.umi_trie} \
+                --umi-tools {input.umi_tools} > {output} 2> {log}
         """

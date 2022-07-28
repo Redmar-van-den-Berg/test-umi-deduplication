@@ -8,7 +8,9 @@ containers = {
 
 default = {"umi-trie": srcdir("bin/umi-trie")}
 
+
 pepfile: config["pepfile"]
+
 
 # Apply the settings from the pepfile, overwriting the default ones
 default.update(pep.config.get("test-umi-deduplication", dict()))
@@ -21,7 +23,7 @@ default.update(config)
 config = default
 
 # Make sample names easily accessible
-samples=pep.sample_table.sample_name
+samples = list(pep.sample_table.sample_name)
 
 
 def get_fastq(wildcards, column):

@@ -26,6 +26,12 @@
         - Left after removing perfect duplicates
     - path: sample1/align/sample1.bam
     - path: sample1/sample1.umi.dedup.bam
+    - path: umi-stats.tsv
+      contains:
+        - umi_trie_perc_duplicates
+        - umi_tools_perc_duplicates
+        - sample1
+        - sample2
 
 - name: integration-subsamples
   tags:
