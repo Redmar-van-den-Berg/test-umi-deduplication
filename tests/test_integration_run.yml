@@ -18,6 +18,9 @@
     - path: sample1/umi-trie/forward_dedup.fastq.gz
     - path: sample1/umi-trie/reverse_dedup.fastq.gz
     - path: sample1/umi-trie/umi_dedup.fastq.gz
+    - path: sample1/umi-trie/stats.dat
+      contains:
+        - 'total:'
     - path: log/sample1-umi-trie.txt
       contains:
         - Left after removing perfect duplicates

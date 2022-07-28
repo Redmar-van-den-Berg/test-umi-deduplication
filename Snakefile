@@ -72,7 +72,8 @@ rule umi_trie:
         mkdir -p $folder
 
         {input.umi_trie} \
-            -f $folder \
+            -d $folder \
+            -s \
             {input.forw} {input.rev} {input.umi} 2> {log}
         """
 
