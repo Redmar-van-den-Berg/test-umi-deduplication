@@ -53,6 +53,19 @@ jobs:
         path: ${{ env.CONDA }}/envs
         key: conda-${{ hashFiles('environment.yml') }}-${{ steps.get-date.outputs.week }}-${{ env.CACHE_NUMBER }}
 
+    - name: Cache singularity images
+      uses: actions/cache@v3
+      env:
+        # Increase this value to manually invalidate the cache
+        CACHE_NUMBER: 0
+      with:
+        path:
+          ~/.singularity/cache/snakemake
+        key: singularity-${{ hashFiles('**/common.smk') }}-${{ matrix.test}}-${{ env.CACHE_NUMBER }}
+        restore-keys: |
+          singularity-${{ hashFiles('**/common.smk') }}-
+          singularity-
+
     - name: Update conda environment
       run: mamba env update -n test-umi-deduplication -f environment.yml
       if: steps.conda-cache.outputs.cache-hit != 'true'
