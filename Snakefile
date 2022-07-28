@@ -1,28 +1,14 @@
 include: "common.smk"
 
 
-pepfile: config["pepfile"]
-
-
-# Apply the settings from the pepfile, overwriting the default ones
-default.update(pep.config.get("test-umi-deduplication", dict()))
-
-# Apply the options specified to snakemake, overwriting the default settings
-# and the settings from the PEP file
-default.update(config)
-
-# Set the updated dict as the configuration for the pipeline
-config = default
-
-
 rule all:
     input:
         concat=expand(
             "{sample}/umi-trie/forward_dedup.fastq.gz",
-            sample=pep.sample_table.sample_name,
+            sample=samples,
         ),
         bam=expand(
-            "{sample}/{sample}.umi.dedup.bam", sample=pep.sample_table.sample_name
+            "{sample}/{sample}.umi.dedup.bam", sample=samples
         ),
         stats="umi-stats.tsv",
 
@@ -203,7 +189,7 @@ rule umi_dedup:
 
 rule parse_umi_log:
     input:
-        logs=expand("log/{sample}_umi_dedup.log", sample=pep.sample_table.sample_name),
+        logs=expand("log/{sample}_umi_dedup.log", sample=samples),
         parse_umi_log=srcdir("scripts/parse-umi-log.py"),
     output:
         "umi-stats.tsv",

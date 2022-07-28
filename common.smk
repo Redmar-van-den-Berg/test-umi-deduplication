@@ -8,6 +8,21 @@ containers = {
 
 default = {"umi-trie": srcdir("bin/umi-trie")}
 
+pepfile: config["pepfile"]
+
+# Apply the settings from the pepfile, overwriting the default ones
+default.update(pep.config.get("test-umi-deduplication", dict()))
+
+# Apply the options specified to snakemake, overwriting the default settings
+# and the settings from the PEP file
+default.update(config)
+
+# Set the updated dict as the configuration for the pipeline
+config = default
+
+# Make sample names easily accessible
+samples=pep.sample_table.sample_name
+
 
 def get_fastq(wildcards, column):
     fastq = pep.sample_table.loc[wildcards.sample, column]
