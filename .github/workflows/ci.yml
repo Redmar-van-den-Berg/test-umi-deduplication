@@ -24,38 +24,40 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - uses: eWaterCycle/setup-singularity@v6
+    - name: Setup Mambaforge
+      uses: conda-incubator/setup-miniconda@v2
+      with:
+        miniforge-variant: Mambaforge
+        miniforge-version: latest
+        activate-environment: test-umi-deduplication
+        use-mamba: true
+
+    - name: Install singularity
+      uses: eWaterCycle/setup-singularity@v6
       with:
         singularity-version: 3.6.4
 
-    - name: Cache conda packages
-      uses: actions/cache@v2
-      env:
-        # Increase this value to manually invalidate the cache
-        CACHE_NUMBER: 0
-      with:
-        path: ~/conda_pkgs_dir
-        key:
-          ${{ runner.os}}-conda-${{ env.CACHE_NUMBER }}-${{ hashFiles('environment.yml') }}
+    # This is used to invalidate the conda environment every week
+    - name: Get year and week (for conda cache)
+      id: get-date
+      run: echo "::set-output name=week::$(/bin/date -u '+%Y-w%V')"
+      shell: bash
 
     - name: Cache conda environment
+      id: conda-cache
       uses: actions/cache@v2
       env:
         # Increase this value to manually invalidate the cache
         CACHE_NUMBER: 0
       with:
-        path: /usr/share/miniconda/envs/test-umi-deduplication
-        key:
-          ${{ runner.os}}-test-umi-deduplication-${{ env.CACHE_NUMBER }}-${{ hashFiles('environment.yml') }}
+        path: ${{ env.CONDA }}/envs
+        key: conda-${{ hashFiles('environment.yml') }}-${{ steps.get-date.outputs.week }}-${{ env.CACHE_NUMBER }}
 
-    - uses: conda-incubator/setup-miniconda@v2.0.1
-      # https://github.com/conda-incubator/setup-miniconda.
-      with:
-        activate-environment: test-umi-deduplication
-        environment-file: environment.yml
-        auto-activate-base: false
+    - name: Update conda environment
+      run: mamba env update -n test-umi-deduplication -f environment.yml
+      if: steps.conda-cache.outputs.cache-hit != 'true'
 
-    - name: Run test in conda evironment
+    - name: Run test in conda environment
       run: >-
         pytest --keep-workflow-wd-on-fail --tag ${{ matrix.test }}
 
