@@ -33,6 +33,9 @@
         - umi_tools_perc_duplicates
         - sample1
         - sample2
+    - path: sample1/sample1.umi.forward.fastq.gz
+      contains:
+        - '@ERR2438055.20253_CCCCCCCC'
 
 - name: integration-subsamples
   tags:

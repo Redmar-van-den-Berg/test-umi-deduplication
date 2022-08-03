@@ -17,8 +17,12 @@ def main(args):
 
     for f, u, r in zip(forward, umi, reverse):
         umi = u.sequence
-        f.name = f"{f.name}_{umi}"
-        r.name = f"{r.name}_{umi}"
+        # If there are spaces in the header, we have to add the UMI before the
+        # first space
+        f_name, f_rest = f.name.split(maxsplit=1)
+        r_name, r_rest = r.name.split(maxsplit=1)
+        f.name = f"{f_name}_{umi} {f_rest}"
+        r.name = f"{r_name}_{umi} {r_rest}"
 
         fout.write(f.fastq_bytes())
         rout.write(r.fastq_bytes())
