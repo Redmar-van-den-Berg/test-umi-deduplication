@@ -37,6 +37,8 @@
       contains:
         - '@ERR2438055.20253_CCCCCCCC'
     - path: sample1/umi-tools/forward.fastq.gz
+    - path: sample1/umi-tools/reverse.fastq.gz
+    - path: sample1/umi-tools/umi.fastq.gz
 
 - name: integration-subsamples
   tags:

@@ -213,11 +213,13 @@ rule bam_to_fastq:
     input:
         forw=rules.concat.output.forw,
         rev=rules.concat.output.rev,
+        umi=rules.concat.output.umi,
         bam=rules.umi_dedup.output.bam,
         src=srcdir("scripts/fastq-from-bam.py"),
     output:
         forw="{sample}/umi-tools/forward.fastq.gz",
         rev="{sample}/umi-tools/reverse.fastq.gz",
+        umi="{sample}/umi-tools/umi.fastq.gz",
     log:
         "log/{sample}.bam_to_fastq.txt",
     container:
@@ -225,7 +227,7 @@ rule bam_to_fastq:
     shell:
         """
         python3 {input.src} \
-            --fastq-in {input.forw} {input.rev} \
-            --fastq-out {output.forw} {output.rev} \
+            --fastq-in {input.forw} {input.rev} {input.umi} \
+            --fastq-out {output.forw} {output.rev} {output.umi} \
             --bam {input.bam} 2> {log}
         """
