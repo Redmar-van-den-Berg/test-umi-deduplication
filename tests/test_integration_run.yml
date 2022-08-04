@@ -36,6 +36,7 @@
     - path: sample1/sample1.umi.forward.fastq.gz
       contains:
         - '@ERR2438055.20253_CCCCCCCC'
+    - path: sample1/umi-tools/forward.fastq.gz
 
 - name: integration-subsamples
   tags:

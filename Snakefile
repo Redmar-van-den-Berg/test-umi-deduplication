@@ -9,6 +9,7 @@ rule all:
         ),
         bam=expand("{sample}/{sample}.umi.dedup.bam", sample=samples),
         stats="umi-stats.tsv",
+        fastq=expand("{sample}/umi-tools/forward.fastq.gz", sample=samples),
 
 
 rule concat:
@@ -205,4 +206,26 @@ rule parse_umi_log:
                 --samples {params.samples} \
                 --umi-trie {input.umi_trie} \
                 --umi-tools {input.umi_tools} > {output} 2> {log}
+        """
+
+
+rule bam_to_fastq:
+    input:
+        forw=rules.concat.output.forw,
+        rev=rules.concat.output.rev,
+        bam=rules.umi_dedup.output.bam,
+        src=srcdir("scripts/fastq-from-bam.py"),
+    output:
+        forw="{sample}/umi-tools/forward.fastq.gz",
+        rev="{sample}/umi-tools/reverse.fastq.gz",
+    log:
+        "log/{sample}.bam_to_fastq.txt",
+    container:
+        containers["dnaio"]
+    shell:
+        """
+        python3 {input.src} \
+            --fastq-in {input.forw} {input.rev} \
+            --fastq-out {output.forw} {output.rev} \
+            --bam {input.bam} 2> {log}
         """
