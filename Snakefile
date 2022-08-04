@@ -14,7 +14,7 @@ rule all:
             "{sample}/umi-tools/umi-trie/forward_dedup.fastq.gz", sample=samples
         ),
         temp=expand(
-            "{sample}/umi-trie/umi-tools/align/{sample}.sam", sample=samples
+            "{sample}/umi-trie/umi-tools/align/{sample}.bam", sample=samples
         ),
 
 
@@ -278,3 +278,15 @@ use rule align_vars as align_after_umi_trie with:
         sam="{sample}/umi-trie/umi-tools/align/{sample}.sam",
     log:
         "log/{sample}.align_after_umi_trie.txt",
+
+# Sort the bamfile
+use rule sort_bamfile as sort_bamfile_after_umi_trie with:
+    input:
+        sam=rules.align_after_umi_trie.output.sam,
+    output:
+        bam="{sample}/umi-trie/umi-tools/align/{sample}.bam",
+        bai="{sample}/umi-trie/umi-tools/align/{sample}.bai",
+    log:
+        "log/{sample}.sort_bamfile_after_umi_trie.txt",
+
+#Run umi-tools
