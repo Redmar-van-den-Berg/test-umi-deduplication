@@ -10,8 +10,12 @@ rule all:
         bam=expand("{sample}/{sample}.umi.dedup.bam", sample=samples),
         stats="umi-stats.tsv",
         fastq=expand("{sample}/umi-tools/forward.fastq.gz", sample=samples),
-        trie2=expand("{sample}/umi-tools/umi-trie/forward_dedup.fastq.gz",
-                sample=samples),
+        trie2=expand(
+            "{sample}/umi-tools/umi-trie/forward_dedup.fastq.gz", sample=samples
+        ),
+        temp=expand(
+            "{sample}/umi-trie/umi-tools/{sample}.umi.forward.fastq.gz", sample=samples
+        ),
 
 
 rule concat:
@@ -235,6 +239,7 @@ rule bam_to_fastq:
         """
 
 
+# Run umi-trie on the output of umi-tools
 use rule umi_trie as umi_trie_after_umi_tools with:
     input:
         forw=rules.bam_to_fastq.output.forw,
@@ -249,3 +254,16 @@ use rule umi_trie as umi_trie_after_umi_tools with:
     log:
         "log/{sample}.umi_trie_after_umi_tools.txt",
 
+
+# Add the UMI's to the read name after running UMI-trie
+use rule add_umi as add_umi_after_umi_trie with:
+    input:
+        forw=rules.umi_trie.output.forw,
+        rev=rules.umi_trie.output.rev,
+        umi=rules.umi_trie.output.umi,
+        add_umi=srcdir("scripts/add-umi.py"),
+    output:
+        forw="{sample}/umi-trie/umi-tools/{sample}.umi.forward.fastq.gz",
+        rev="{sample}/umi-trie/umi-tools/{sample}.umi.reverse.fastq.gz",
+    log:
+        "log/{sample}.add_umi_after_umi_trie.txt",
