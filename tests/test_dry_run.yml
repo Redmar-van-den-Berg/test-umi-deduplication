@@ -19,6 +19,7 @@
       - sample1/sample1.umi.forward.fastq.gz
       - sample1/sample1.umi.dedup.bam
       - sample1/umi-tools/forward.fastq.gz
+      - sample1/umi-tools/umi-trie/forward_dedup.fastq.gz
 
 - name: dry-run-subsamples
   tags:

@@ -10,6 +10,8 @@ rule all:
         bam=expand("{sample}/{sample}.umi.dedup.bam", sample=samples),
         stats="umi-stats.tsv",
         fastq=expand("{sample}/umi-tools/forward.fastq.gz", sample=samples),
+        trie2=expand("{sample}/umi-tools/umi-trie/forward_dedup.fastq.gz",
+                sample=samples),
 
 
 rule concat:
@@ -231,3 +233,19 @@ rule bam_to_fastq:
             --fastq-out {output.forw} {output.rev} {output.umi} \
             --bam {input.bam} 2> {log}
         """
+
+
+use rule umi_trie as umi_trie_after_umi_tools with:
+    input:
+        forw=rules.bam_to_fastq.output.forw,
+        rev=rules.bam_to_fastq.output.rev,
+        umi=rules.bam_to_fastq.output.umi,
+        umi_trie=config["umi_trie"],
+    output:
+        forw="{sample}/umi-tools/umi-trie/forward_dedup.fastq.gz",
+        rev="{sample}/umi-tools/umi-trie/reverse_dedup.fastq.gz",
+        umi="{sample}/umi-tools/umi-trie/umi_dedup.fastq.gz",
+        stats="{sample}/umi-tools/umi-trie/stats.dat",
+    log:
+        "log/{sample}.umi_trie_after_umi_tools.txt",
+
