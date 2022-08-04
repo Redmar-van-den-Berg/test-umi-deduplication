@@ -23,6 +23,7 @@
       - sample1/umi-trie/umi-tools/sample1.umi.forward.fastq.gz
       - sample1/umi-trie/umi-tools/align/sample1.sam
       - sample1/umi-trie/umi-tools/align/sample1.bam
+      - sample1/umi-trie/umi-tools/sample1.umi.dedup.bam
 
 - name: dry-run-subsamples
   tags:

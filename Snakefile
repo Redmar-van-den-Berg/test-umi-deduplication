@@ -10,11 +10,11 @@ rule all:
         bam=expand("{sample}/{sample}.umi.dedup.bam", sample=samples),
         stats="umi-stats.tsv",
         fastq=expand("{sample}/umi-tools/forward.fastq.gz", sample=samples),
-        trie2=expand(
+        trie_after_umi_tools=expand(
             "{sample}/umi-tools/umi-trie/forward_dedup.fastq.gz", sample=samples
         ),
-        temp=expand(
-            "{sample}/umi-trie/umi-tools/align/{sample}.bam", sample=samples
+        umi_tools_after_trie=expand(
+            "{sample}/umi-trie/umi-tools/{sample}.umi.dedup.bam", sample=samples
         ),
 
 
@@ -268,6 +268,7 @@ use rule add_umi as add_umi_after_umi_trie with:
     log:
         "log/{sample}.add_umi_after_umi_trie.txt",
 
+
 # Align the reads to the reference
 use rule align_vars as align_after_umi_trie with:
     input:
@@ -279,6 +280,7 @@ use rule align_vars as align_after_umi_trie with:
     log:
         "log/{sample}.align_after_umi_trie.txt",
 
+
 # Sort the bamfile
 use rule sort_bamfile as sort_bamfile_after_umi_trie with:
     input:
@@ -289,4 +291,13 @@ use rule sort_bamfile as sort_bamfile_after_umi_trie with:
     log:
         "log/{sample}.sort_bamfile_after_umi_trie.txt",
 
-#Run umi-tools
+
+# Run umi-tools
+use rule umi_dedup as umi_dedup_after_umi_trie with:
+    input:
+        bam=rules.sort_bamfile_after_umi_trie.output.bam,
+        bai=rules.sort_bamfile_after_umi_trie.output.bai,
+    output:
+        bam="{sample}/umi-trie/umi-tools/{sample}.umi.dedup.bam",
+    log:
+        "log/{sample}_umi_dedup_after_umi_trie.log",
