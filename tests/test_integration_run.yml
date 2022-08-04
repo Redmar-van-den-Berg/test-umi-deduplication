@@ -42,6 +42,7 @@
     - path: sample1/umi-tools/umi-trie/forward_dedup.fastq.gz
     - path: sample1/umi-tools/umi-trie/stats.dat
     - path: sample1/umi-trie/umi-tools/sample1.umi.forward.fastq.gz
+    - path: sample1/umi-trie/umi-tools/align/sample1.sam
 
 - name: integration-subsamples
   tags:

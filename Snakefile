@@ -14,7 +14,7 @@ rule all:
             "{sample}/umi-tools/umi-trie/forward_dedup.fastq.gz", sample=samples
         ),
         temp=expand(
-            "{sample}/umi-trie/umi-tools/{sample}.umi.forward.fastq.gz", sample=samples
+            "{sample}/umi-trie/umi-tools/align/{sample}.sam", sample=samples
         ),
 
 
@@ -267,3 +267,14 @@ use rule add_umi as add_umi_after_umi_trie with:
         rev="{sample}/umi-trie/umi-tools/{sample}.umi.reverse.fastq.gz",
     log:
         "log/{sample}.add_umi_after_umi_trie.txt",
+
+# Align the reads to the reference
+use rule align_vars as align_after_umi_trie with:
+    input:
+        fq1=rules.add_umi_after_umi_trie.output.forw,
+        fq2=rules.add_umi_after_umi_trie.output.rev,
+        index=rules.index_reference.output,
+    output:
+        sam="{sample}/umi-trie/umi-tools/align/{sample}.sam",
+    log:
+        "log/{sample}.align_after_umi_trie.txt",
