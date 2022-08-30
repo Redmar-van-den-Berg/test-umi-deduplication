@@ -71,6 +71,20 @@ def is_discordant(read):
     return xu == 1 or xu == 2
 
 
+def match_word(word1, word2, distance=1):
+    """ Does word1 match word2, given the specified distance """
+    # Words must be the same size
+    if len(word1) != len(word2):
+        raise RuntimeError(f'Unequal word length: "{word1}" and "{word2}"')
+
+    d = 0
+    for i, j in zip(word1, word2):
+        if i != j:
+            d+=1
+        if d > distance:
+            return False
+    return True
+
 if __name__ == '__main__':
     fname = sys.argv[1]
 
