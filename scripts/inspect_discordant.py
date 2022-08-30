@@ -85,6 +85,17 @@ def match_word(word1, word2, distance=1):
             return False
     return True
 
+
+def match_reads(read1, read2, distance=1):
+    return match_word(read1.word, read2.word, distance=distance)
+
+
+def group_reads(reads, distance=1):
+    """ Group reads that fall within a given edit distance """
+    if len(reads) == 1:
+        return reads
+    
+
 if __name__ == '__main__':
     fname = sys.argv[1]
 

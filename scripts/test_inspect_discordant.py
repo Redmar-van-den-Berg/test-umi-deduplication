@@ -1,6 +1,6 @@
 import pytest
 
-from inspect_discordant import ReadPair, match_word
+from inspect_discordant import ReadPair, match_word, group_reads, match_reads
 
 readpair1 = ReadPair('name_ATCG', (1,2), 1, 'ATCG')
 readpair2 = ReadPair('name2_ATCG', (1,2), 2, 'ATCG')
@@ -24,3 +24,16 @@ def test_match_word():
     assert not match_word('A', 'B', 0)
     with pytest.raises(RuntimeError):
         match_word('AA', 'B')
+
+
+def test_group_single_read():
+    reads = [readpair1]
+    assert group_reads(reads) == reads
+
+
+def test_match_read():
+    assert match_reads(readpair1, readpair2)
+
+def test_group_two_reads():
+    reads = [readpair1, readpair2]
+    assert group_reads(reads) == reads
