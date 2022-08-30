@@ -33,7 +33,7 @@ def make_pos(read, pair, samfile):
 def make_word(read, pair):
     """ Create a word, similar to umi-trie """
     umi = read.query_name.split('_')[1]
-    return read.seq[:8] + pair.seq[:8] + umi
+    return umi + read.seq[:8] + pair.seq[:8]
 
 
 def make_readpair(read, samfile):
