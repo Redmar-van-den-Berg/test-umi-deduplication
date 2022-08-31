@@ -1,6 +1,6 @@
 import pytest
 
-from inspect_discordant import add_and_merge, find_matches, ReadPair, match_word,  match_reads
+from inspect_discordant import add_and_merge, find_matches, ReadPair, match_word,  match_reads, explain_discordance
 
 readpair1 = ReadPair('name_ATCG', (1,2), 1, 'ATCG')
 readpair2 = ReadPair('name2_ATCG', (1,2), 2, 'ATCG')
@@ -67,3 +67,7 @@ def test_find_matches_two():
     clusters = [['AA'], ['BB']]
     item = 'AB'
     assert find_matches(clusters, item, match_word) == [['AA'], ['BB']]
+
+def test_explain_discordance():
+    cluster = [readpair1, readpair2]
+    assert explain_discordance(cluster) == 'Alternative read'

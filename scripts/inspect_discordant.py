@@ -3,8 +3,10 @@
 from dataclasses import dataclass, field
 from collections import defaultdict
 
+import functools
 import pysam
 import sys
+import json
 
 @dataclass
 class ReadPair:
@@ -115,8 +117,7 @@ def add_and_merge(clusters, item, compare):
     new_cluster = list()
 
     # Find and merge all existing cluster that match item
-    matches = find_matches(clusters, item, compare)
-    for cluster in matches:
+    for cluster in find_matches(clusters, item, compare):
         new_cluster += cluster
         clusters.remove(cluster)
 
@@ -125,6 +126,18 @@ def add_and_merge(clusters, item, compare):
     
     # Add the new cluster to the list of clusters
     clusters.append(new_cluster)
+
+
+def explain_discordance(cluster):
+    """ Attempt to explain the discordance between the reads in the cluster """
+    if len(cluster) == 2:
+        pair1 = cluster[0]
+        pair2 = cluster[1]
+
+        # If both tools simply picked a different read to mark as duplicate
+        if (pair1.trie_filt and pair2.tool_filt) or (pair2.tool_filt and pair2.trie_filt):
+            return 'Alternative read'
+
 
 if __name__ == '__main__':
     fname = sys.argv[1]
@@ -135,10 +148,13 @@ if __name__ == '__main__':
 
     # Result of explanations for discordant reads
     results = defaultdict(int)
+    # Keep track of all reads that we could not explain
+    unexplained = list()
 
     for i, read in enumerate(samfile.fetch(),1):
         if i % 1000 == 0:
             print(f'Parsed {i} reads from {fname}', file=sys.stderr)
+        if i % 20000 == 0:
             break
 
         # We only act on read1 (since we fetch the mate)
@@ -160,7 +176,23 @@ if __name__ == '__main__':
         readpairs[readpair.pos].append(readpair)
 
     for pos, reads in readpairs.items():
-        print(pos)
-        print(*reads, sep='\n')
-        print()
+        clusters = list()
+        comp = functools.partial(match_reads, distance=1)
+        # Merge reads together based on hamming distance
+        for read in reads:
+            add_and_merge(clusters, read, comp)
 
+        for cluster in clusters:
+            if (exp := explain_discordance(cluster)):
+                results[exp] +=2
+            else:
+                results['unexplained'] += len(cluster)
+                unexplained += cluster
+                print(pos)
+                print(*cluster, sep='\n')
+                print()
+
+
+    for i in unexplained:
+        print(i.name)
+    print(json.dumps(results,indent=True))
