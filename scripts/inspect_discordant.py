@@ -94,9 +94,9 @@ def find_matches(clusters, item, compare):
     """ Determine which clusters match item, using compare """
     matches = list()
 
-    for i in range(len(clusters)):
-        if any(compare(item, c) for c in clusters[i]):
-            matches.append(clusters[i])
+    for cluster in clusters:
+        if any(compare(item, i) for i in cluster):
+            matches.append(cluster)
             continue
     return matches
 
@@ -116,9 +116,9 @@ def add_and_merge(clusters, item, compare):
 
     # Find and merge all existing cluster that match item
     matches = find_matches(clusters, item, compare)
-    for c in matches:
-        new_cluster += c
-        clusters.remove(c)
+    for cluster in matches:
+        new_cluster += cluster
+        clusters.remove(cluster)
 
     # Add item itself to the new cluster
     new_cluster.append(item)
