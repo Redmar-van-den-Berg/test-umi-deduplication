@@ -1,6 +1,6 @@
 import pytest
 
-from inspect_discordant import ReadPair, match_word, group_reads, match_reads
+from inspect_discordant import add_and_merge, find_matches, ReadPair, match_word,  match_reads
 
 readpair1 = ReadPair('name_ATCG', (1,2), 1, 'ATCG')
 readpair2 = ReadPair('name2_ATCG', (1,2), 2, 'ATCG')
@@ -25,15 +25,45 @@ def test_match_word():
     with pytest.raises(RuntimeError):
         match_word('AA', 'B')
 
-
-def test_group_single_read():
-    reads = [readpair1]
-    assert group_reads(reads) == reads
-
-
 def test_match_read():
     assert match_reads(readpair1, readpair2)
 
-def test_group_two_reads():
-    reads = [readpair1, readpair2]
-    assert group_reads(reads) == reads
+def test_add_and_merge_empty():
+    clusters = list()
+    item = 'AA'
+    add_and_merge(clusters, item, match_word)
+    assert clusters == [['AA']]
+
+def test_add_and_merge_match():
+    clusters = [['AB']]
+    item = 'AA'
+    add_and_merge(clusters, item, match_word)
+    assert clusters == [['AB', 'AA']]
+
+def test_add_and_merge_mismatch():
+    clusters = [['BB']]
+    item = 'AA'
+    add_and_merge(clusters, item, match_word)
+    assert clusters == [['BB'], ['AA']]
+
+def test_add_and_merge_bridge():
+    """ Test if two clusters are merged if item bridges them """
+    clusters = [['AA'], ['BB']]
+    item = 'AB'
+    add_and_merge(clusters, item, match_word)
+    assert clusters == [['AA', 'BB', 'AB']]
+
+def test_find_matches_none():
+    clusters = list()
+    item = 'AA'
+    find_matches(clusters, item, match_word) == []
+
+def test_find_matches_one():
+    clusters = [['AA']]
+    item = 'AB'
+    assert find_matches(clusters, item, match_word) == [['AA']]
+
+def test_find_matches_two():
+    clusters = [['AA'], ['BB']]
+    item = 'AB'
+    assert find_matches(clusters, item, match_word) == [['AA'], ['BB']]

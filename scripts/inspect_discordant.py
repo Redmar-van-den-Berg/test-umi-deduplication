@@ -90,11 +90,41 @@ def match_reads(read1, read2, distance=1):
     return match_word(read1.word, read2.word, distance=distance)
 
 
-def group_reads(reads, distance=1):
-    """ Group reads that fall within a given edit distance """
-    if len(reads) == 1:
-        return reads
+def find_matches(clusters, item, compare):
+    """ Determine which clusters match item, using compare """
+    matches = list()
+
+    for i in range(len(clusters)):
+        if any(compare(item, c) for c in clusters[i]):
+            matches.append(clusters[i])
+            continue
+    return matches
+
+
+def add_and_merge(clusters, item, compare):
+    """ Add item to one of the clusters, or add it to a new cluster
+
+    Use compare to determine if item fits with any of the clusters.
+
+    If the addition of item bridges multiple clusters, merge them
+
+    This function modifies clusters in place
+    """
+    # We always create a new cluster. It will either contain only item, or any
+    # existing clusters that match item, as well as item itself
+    new_cluster = list()
+
+    # Find and merge all existing cluster that match item
+    matches = find_matches(clusters, item, compare)
+    for c in matches:
+        new_cluster += c
+        clusters.remove(c)
+
+    # Add item itself to the new cluster
+    new_cluster.append(item)
     
+    # Add the new cluster to the list of clusters
+    clusters.append(new_cluster)
 
 if __name__ == '__main__':
     fname = sys.argv[1]

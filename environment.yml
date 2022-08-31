@@ -12,3 +12,4 @@ dependencies:
   - python=3.10.2
   - snakemake-minimal=6.14.0
   - snakefmt=0.4.4
+  - pysam=0.19.1
