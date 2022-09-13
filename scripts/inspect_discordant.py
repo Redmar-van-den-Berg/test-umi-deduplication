@@ -147,6 +147,14 @@ def explain_discordance(cluster):
             return 'Single read, marked by umi-tools'
 
 
+def write_unexplained(infile, outfile, unexplained):
+    samfile = pysam.AlignmentFile(infile)
+    outfile = pysam.AlignmentFile(outfile, "wb", template=samfile)
+
+    for read in samfile.fetch():
+        if read.query_name in unexplained:
+            outfile.write(read)
+
 def main(args):
     samfile = pysam.AlignmentFile(args.bam)
 
@@ -199,8 +207,13 @@ def main(args):
                 print()
 
 
-    for i in unexplained:
-        print(i.name)
+    # Put the readnames for unxplained reads in a set
+    unex = {read.name for read in unexplained}
+
+    # Write unexplained reads to bam output
+    print(f'Writing {len(unex)} reads to {args.bamout}', file=sys.stderr)
+    write_unexplained(args.bam, args.bamout, unex)
+
     print(json.dumps(results,indent=True))
 
 
