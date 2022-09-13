@@ -68,6 +68,14 @@ def test_find_matches_two():
     item = 'AB'
     assert find_matches(clusters, item, match_word) == [['AA'], ['BB']]
 
-def test_explain_discordance():
+def test_explain_discordance_alternative():
     cluster = [readpair1, readpair2]
     assert explain_discordance(cluster) == 'Alternative read'
+
+def test_explain_discordance_solo_trie_filt():
+    cluster = [readpair1]
+    assert explain_discordance(cluster) == 'Single read, marked by umi-trie'
+
+def test_explain_discordance_solo_tool_filt():
+    cluster = [readpair2]
+    assert explain_discordance(cluster) == 'Single read, marked by umi-tools'

@@ -3,6 +3,7 @@
 from dataclasses import dataclass, field
 from collections import defaultdict
 
+import argparse
 import functools
 import pysam
 import sys
@@ -138,11 +139,16 @@ def explain_discordance(cluster):
         if (pair1.trie_filt and pair2.tool_filt) or (pair2.tool_filt and pair2.trie_filt):
             return 'Alternative read'
 
+    if len(cluster) == 1:
+        pair = cluster[0]
+        if pair.trie_filt:
+            return 'Single read, marked by umi-trie'
+        if pair.tool_filt:
+            return 'Single read, marked by umi-tools'
 
-if __name__ == '__main__':
-    fname = sys.argv[1]
 
-    samfile = pysam.AlignmentFile(fname)
+def main(args):
+    samfile = pysam.AlignmentFile(args.bam)
 
     readpairs = defaultdict(list)
 
@@ -153,7 +159,7 @@ if __name__ == '__main__':
 
     for i, read in enumerate(samfile.fetch(),1):
         if i % 1000 == 0:
-            print(f'Parsed {i} reads from {fname}', file=sys.stderr)
+            print(f'Parsed {i} reads from {args.bam}', file=sys.stderr)
         if i % 20000 == 0:
             break
 
@@ -196,3 +202,13 @@ if __name__ == '__main__':
     for i in unexplained:
         print(i.name)
     print(json.dumps(results,indent=True))
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument('bam', help='Input bamfile')
+    parser.add_argument('bamout', help='Output bamfile')
+
+    args = parser.parse_args()
+    main(args)
