@@ -69,8 +69,10 @@ def test_find_matches_two():
     assert find_matches(clusters, item, match_word) == [['AA'], ['BB']]
 
 def test_explain_discordance_alternative():
-    cluster = [readpair1, readpair2]
-    assert explain_discordance(cluster) == 'Alternative read'
+    cluster1 = [readpair1, readpair2]
+    cluster2 = [readpair2, readpair1]
+    assert explain_discordance(cluster1) == 'Alternative read'
+    assert explain_discordance(cluster2) == 'Alternative read'
 
 def test_explain_discordance_solo_trie_filt():
     cluster = [readpair1]

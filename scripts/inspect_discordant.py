@@ -136,7 +136,7 @@ def explain_discordance(cluster):
         pair2 = cluster[1]
 
         # If both tools simply picked a different read to mark as duplicate
-        if (pair1.trie_filt and pair2.tool_filt) or (pair2.tool_filt and pair2.trie_filt):
+        if (pair1.trie_filt and pair2.tool_filt) or (pair1.tool_filt and pair2.trie_filt):
             return 'Alternative read'
 
     if len(cluster) == 1:
@@ -154,6 +154,10 @@ def write_unexplained(infile, outfile, unexplained):
     for read in samfile.fetch():
         if read.query_name in unexplained:
             outfile.write(read)
+
+    samfile.close()
+    outfile.close()
+    pysam.index(outfile)
 
 def main(args):
     samfile = pysam.AlignmentFile(args.bam)
