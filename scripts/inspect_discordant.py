@@ -148,15 +148,15 @@ def explain_discordance(cluster):
 
 
 def write_unexplained(infile, outfile, unexplained):
-    samfile = pysam.AlignmentFile(infile)
-    outfile = pysam.AlignmentFile(outfile, "wb", template=samfile)
+    bamin = pysam.AlignmentFile(infile)
+    bamout = pysam.AlignmentFile(outfile, "wb", template=bamin)
 
-    for read in samfile.fetch():
+    for read in bamin.fetch():
         if read.query_name in unexplained:
-            outfile.write(read)
+            bamout.write(read)
 
-    samfile.close()
-    outfile.close()
+    bamin.close()
+    bamout.close()
     pysam.index(outfile)
 
 def main(args):
