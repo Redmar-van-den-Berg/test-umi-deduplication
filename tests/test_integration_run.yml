@@ -12,6 +12,7 @@
       --config pepfile=tests/pep/project_config.yaml
       reference=tests/data/reference/ref.fa
       --snakefile Snakefile
+      --notemp
   files:
     - path: sample1/concat/forward.fastq.gz
     - path: sample1/concat/reverse.fastq.gz
@@ -62,7 +63,9 @@
       --snakefile Snakefile
   files:
     - path: sample1/concat/forward.fastq.gz
+      should_exist: false
     - path: sample2/concat/forward.fastq.gz
+      should_exist: false
     - path: sample1/umi-trie/forward_dedup.fastq.gz
     - path: sample2/umi-trie/forward_dedup.fastq.gz
     - path: sample1/align/sample1.bam

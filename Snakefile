@@ -25,9 +25,9 @@ rule concat:
         rev=get_reverse,
         umi=get_umi,
     output:
-        forw="{sample}/concat/forward.fastq.gz",
-        rev="{sample}/concat/reverse.fastq.gz",
-        umi="{sample}/concat/umi.fastq.gz",
+        forw=temp("{sample}/concat/forward.fastq.gz"),
+        rev=temp("{sample}/concat/reverse.fastq.gz"),
+        umi=temp("{sample}/concat/umi.fastq.gz"),
     log:
         "log/{sample}_concat.txt",
     container:
