@@ -48,7 +48,6 @@ rule umi_trie:
         forw=rules.concat.output.forw,
         rev=rules.concat.output.rev,
         umi=rules.concat.output.umi,
-        umi_trie=config["umi_trie"],
     output:
         forw="{sample}/umi-trie/forward_dedup.fastq.gz",
         rev="{sample}/umi-trie/reverse_dedup.fastq.gz",
@@ -57,13 +56,13 @@ rule umi_trie:
     log:
         "log/{sample}-umi-trie.txt",
     container:
-        containers["dnaio"]
+        containers["humid"]
     shell:
         """
         folder=$(dirname {output.forw})
         mkdir -p $folder
 
-        {input.umi_trie} \
+        humid \
             -d $folder \
             -s \
             {input.forw} {input.rev} {input.umi} 2> {log}
@@ -245,7 +244,6 @@ use rule umi_trie as umi_trie_after_umi_tools with:
         forw=rules.bam_to_fastq.output.forw,
         rev=rules.bam_to_fastq.output.rev,
         umi=rules.bam_to_fastq.output.umi,
-        umi_trie=config["umi_trie"],
     output:
         forw="{sample}/umi-tools/umi-trie/forward_dedup.fastq.gz",
         rev="{sample}/umi-tools/umi-trie/reverse_dedup.fastq.gz",

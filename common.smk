@@ -3,11 +3,12 @@ containers = {
     # mulled container with dnaio=0.8.1 and pysam=0.19.0
     "dnaio": "docker://quay.io/biocontainers/mulled-v2-2996a7d035117c4238b2b801e740a69df21d91e1:6b3ae5f1a97f370227e8134ba3efc0e318b288c3-0",
     "gsnap": "docker://quay.io/biocontainers/gmap:2014.12.23--pl5.22.0_4",
+    "humid": "docker://quay.io/biocontainers/humid:1.0.2--h5f740d0_0",
     "picard": "docker://quay.io/biocontainers/picard:2.20.5--0",
     "umi-tools": "docker://quay.io/biocontainers/umi_tools:1.1.1--py38h0213d0e_1",
 }
 
-default = {"umi_trie": srcdir("bin/umi-trie")}
+default = dict()
 
 
 pepfile: config["pepfile"]

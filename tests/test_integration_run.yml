@@ -25,7 +25,7 @@
         - 'total:'
     - path: log/sample1-umi-trie.txt
       contains:
-        - Left after removing perfect duplicates
+        - Reading data... done.
     - path: sample1/align/sample1.bam
     - path: sample1/sample1.umi.dedup.bam
     - path: umi-stats.tsv
