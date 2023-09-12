@@ -53,5 +53,7 @@ def get_umi(wildcards):
 
 
 def get_stats():
-    """Generate paths for each of the HUMID stats.dat output files"""
-    return [f"{sample}/umi-trie/stats.dat" for sample in samples]
+    """Generate paths for each of the relevant log files"""
+    humid = [f"humid/{sample}/stats.dat" for sample in samples]
+    umi_tools = [f"log/{sample}_umi_dedup.log" for sample in samples]
+    return humid + umi_tools

@@ -4,7 +4,7 @@ include: "common.smk"
 rule all:
     input:
         concat=expand(
-            "{sample}/umi-trie/forward_dedup.fastq.gz",
+            "humid/{sample}/forward_dedup.fastq.gz",
             sample=samples,
         ),
         bam=expand("{sample}/{sample}.umi.dedup.bam", sample=samples),
@@ -43,19 +43,19 @@ rule concat:
         """
 
 
-rule umi_trie:
+rule humid:
     """Run umi-trie on the fastq files"""
     input:
         forw=rules.concat.output.forw,
         rev=rules.concat.output.rev,
         umi=rules.concat.output.umi,
     output:
-        forw="{sample}/umi-trie/forward_dedup.fastq.gz",
-        rev="{sample}/umi-trie/reverse_dedup.fastq.gz",
-        umi="{sample}/umi-trie/umi_dedup.fastq.gz",
-        stats="{sample}/umi-trie/stats.dat",
+        forw="humid/{sample}/forward_dedup.fastq.gz",
+        rev="humid/{sample}/reverse_dedup.fastq.gz",
+        umi="humid/{sample}/umi_dedup.fastq.gz",
+        stats="humid/{sample}/stats.dat",
     log:
-        "log/{sample}-umi-trie.txt",
+        "log/{sample}-humid.txt",
     container:
         containers["humid"]
     shell:
@@ -196,7 +196,7 @@ rule umi_dedup:
 rule parse_umi_log:
     input:
         umi_tools=expand("log/{sample}_umi_dedup.log", sample=samples),
-        umi_trie=expand("{sample}/umi-trie/stats.dat", sample=samples),
+        umi_trie=expand("humid/{sample}/stats.dat", sample=samples),
         parse_umi_log=srcdir("scripts/parse-umi-log.py"),
     params:
         samples=samples,
@@ -240,7 +240,7 @@ rule bam_to_fastq:
 
 
 # Run umi-trie on the output of umi-tools
-use rule umi_trie as umi_trie_after_umi_tools with:
+use rule humid as humid_after_umi_tools with:
     input:
         forw=rules.bam_to_fastq.output.forw,
         rev=rules.bam_to_fastq.output.rev,
@@ -251,15 +251,15 @@ use rule umi_trie as umi_trie_after_umi_tools with:
         umi="{sample}/umi-tools/umi-trie/umi_dedup.fastq.gz",
         stats="{sample}/umi-tools/umi-trie/stats.dat",
     log:
-        "log/{sample}.umi_trie_after_umi_tools.txt",
+        "log/{sample}.humid_after_umi_tools.txt",
 
 
 # Add the UMI's to the read name after running UMI-trie
 use rule add_umi as add_umi_after_umi_trie with:
     input:
-        forw=rules.umi_trie.output.forw,
-        rev=rules.umi_trie.output.rev,
-        umi=rules.umi_trie.output.umi,
+        forw=rules.humid.output.forw,
+        rev=rules.humid.output.rev,
+        umi=rules.humid.output.umi,
         add_umi=srcdir("scripts/add-umi.py"),
     output:
         forw="{sample}/umi-trie/umi-tools/{sample}.umi.forward.fastq.gz",

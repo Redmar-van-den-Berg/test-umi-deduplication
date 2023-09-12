@@ -12,7 +12,7 @@
   stdout:
     contains:
       - sample1/concat/forward.fastq.gz
-      - sample1/umi-trie/forward_dedup.fastq.gz
+      - humid/sample1/forward_dedup.fastq.gz
       - sample1/align/sample1.sam
       - sample1/align/sample1.bam
       - sample1/align/sample1.bai
@@ -40,8 +40,8 @@
     contains:
       - sample1/concat/forward.fastq.gz
       - sample2/concat/forward.fastq.gz
-      - sample1/umi-trie/forward_dedup.fastq.gz
-      - sample2/umi-trie/forward_dedup.fastq.gz
+      - humid/sample1/forward_dedup.fastq.gz
+      - humid/sample2/forward_dedup.fastq.gz
       - sample1/align/sample1.bam
       - sample2/align/sample2.bam
       - sample2/sample2.umi.dedup.bam

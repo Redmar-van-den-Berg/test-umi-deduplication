@@ -17,13 +17,13 @@
     - path: sample1/concat/forward.fastq.gz
     - path: sample1/concat/reverse.fastq.gz
     - path: sample1/concat/umi.fastq.gz
-    - path: sample1/umi-trie/forward_dedup.fastq.gz
-    - path: sample1/umi-trie/reverse_dedup.fastq.gz
-    - path: sample1/umi-trie/umi_dedup.fastq.gz
-    - path: sample1/umi-trie/stats.dat
+    - path: humid/sample1/forward_dedup.fastq.gz
+    - path: humid/sample1/reverse_dedup.fastq.gz
+    - path: humid/sample1/umi_dedup.fastq.gz
+    - path: humid/sample1/stats.dat
       contains:
         - 'total:'
-    - path: log/sample1-umi-trie.txt
+    - path: log/sample1-humid.txt
       contains:
         - Reading data... done.
     - path: sample1/align/sample1.bam
@@ -51,6 +51,11 @@
       contains:
         # The report should contain a section for HUMID
         - HUMID
+        # The report should contain a section for UMI-Tools
+        - UMI-tools 
+        # The report should contain both samples
+        - sample1
+        - sample2
 
 - name: integration-subsamples
   tags:
@@ -71,8 +76,8 @@
       should_exist: false
     - path: sample2/concat/forward.fastq.gz
       should_exist: false
-    - path: sample1/umi-trie/forward_dedup.fastq.gz
-    - path: sample2/umi-trie/forward_dedup.fastq.gz
+    - path: humid/sample1/forward_dedup.fastq.gz
+    - path: humid/sample2/forward_dedup.fastq.gz
     - path: sample1/align/sample1.bam
     - path: sample2/align/sample2.bam
     - path: sample2/sample2.umi.dedup.bam
