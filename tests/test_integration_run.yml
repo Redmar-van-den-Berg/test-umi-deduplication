@@ -5,7 +5,7 @@
     snakemake
       --reason
       --printshellcmds
-      --jobs 1
+      --jobs
       --latency-wait 5
       --use-singularity --singularity-args ' --cleanenv --bind /tmp'
       --singularity-prefix '~/.singularity/cache/snakemake'
@@ -46,6 +46,11 @@
     - path: sample1/umi-trie/umi-tools/align/sample1.sam
     - path: sample1/umi-trie/umi-tools/align/sample1.bam
     - path: sample1/umi-trie/umi-tools/sample1.umi.dedup.bam
+    # The pipeline should generate a MultiQC report file
+    - path: multiqc_report.html
+      contains:
+        # The report should contain a section for HUMID
+        - HUMID
 
 - name: integration-subsamples
   tags:
@@ -54,7 +59,7 @@
     snakemake
       --reason
       --printshellcmds
-      --jobs 1
+      --jobs
       --latency-wait 5
       --use-singularity --singularity-args ' --cleanenv --bind /tmp'
       --singularity-prefix '~/.singularity/cache/snakemake'
