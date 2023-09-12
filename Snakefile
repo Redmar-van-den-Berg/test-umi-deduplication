@@ -16,6 +16,7 @@ rule all:
         umi_tools_after_trie=expand(
             "{sample}/umi-trie/umi-tools/{sample}.umi.dedup.bam", sample=samples
         ),
+        multiqc="multiqc_report.html",
 
 
 rule concat:
@@ -299,3 +300,19 @@ use rule umi_dedup as umi_dedup_after_umi_trie with:
         bam="{sample}/umi-trie/umi-tools/{sample}.umi.dedup.bam",
     log:
         "log/{sample}_umi_dedup_after_umi_trie.log",
+
+
+# Run MultiQC on HUMID output
+rule multiqc:
+    input:
+        stats=get_stats(),
+    output:
+        html="multiqc_report.html",
+    log:
+        "log/multiqc.txt",
+    container:
+        containers["multiqc"]
+    shell:
+        """
+        multiqc --force .
+        """
