@@ -314,5 +314,11 @@ rule multiqc:
         containers["multiqc"]
     shell:
         """
-        multiqc --force .
+        rm -f multiqc_filelist.txt
+
+        for fname in {input.stats}; do
+            echo $fname >> multiqc_filelist.txt
+        done
+
+        multiqc --force --file-list multiqc_filelist.txt
         """

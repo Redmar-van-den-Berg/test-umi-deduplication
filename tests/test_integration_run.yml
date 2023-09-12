@@ -56,6 +56,9 @@
         # The report should contain both samples
         - sample1
         - sample2
+      # We should only include the specified log files in the report
+      must_not_contain:
+        - umi-trie
 
 - name: integration-subsamples
   tags:
