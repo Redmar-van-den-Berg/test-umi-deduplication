@@ -30,6 +30,11 @@ of priority.
 3. The default settings for the pipeline, as specified in the `common.smk` file
 
 
+### Supported settings
+| Option               | Type                        | Explanation                                       |
+| ---------------------| --------------------------- | ------------------------------------------------- |
+| repeat               | Optional integer (default=1)| How many times the benchmark should be repeated   |
+
 ## Tests
 You can run the tests that accompany this pipeline with the following commands
 

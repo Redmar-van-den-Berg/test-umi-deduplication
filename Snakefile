@@ -56,6 +56,8 @@ rule humid:
         stats="humid/{sample}/stats.dat",
     log:
         "log/{sample}-humid.txt",
+    benchmark:
+        repeat("benchmarks/humid_{sample}.tsv", config["repeat"])
     container:
         containers["humid"]
     shell:
@@ -128,6 +130,8 @@ rule align_vars:
     threads: 8
     log:
         "log/{sample}_align_vars.txt",
+    benchmark:
+        repeat("benchmarks/gsnap_{sample}.tsv", config["repeat"])
     container:
         containers["gsnap"]
     shell:
@@ -180,6 +184,8 @@ rule umi_dedup:
         bam="{sample}/{sample}.umi.dedup.bam",
     log:
         "log/{sample}_umi_dedup.log",
+    benchmark:
+        repeat("benchmarks/umi_tools_{sample}.tsv", config["repeat"])
     container:
         containers["umi-tools"]
     shell:
