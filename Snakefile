@@ -72,27 +72,6 @@ rule humid:
         """
 
 
-rule index_reference:
-    input:
-        ref=config["reference"],
-    output:
-        directory("gmap_index"),
-    params:
-        "reference",
-    log:
-        "log/index_reference.txt",
-    container:
-        containers["gsnap"]
-    shell:
-        """
-        # Clear the existing folder
-        rm -rf {output}
-        mkdir {output}
-
-        gmap_build -D {output} -d {params} {input.ref} 2>&1 > {log}
-        """
-
-
 rule add_umi:
     input:
         forw=rules.concat.output.forw,
@@ -121,65 +100,65 @@ rule align_vars:
     input:
         fq1=rules.add_umi.output.forw,
         fq2=rules.add_umi.output.rev,
-        index=rules.index_reference.output,
+        index=config["star_index"],
+        gtf=config["gtf"],
     output:
-        sam="{sample}/align/{sample}.sam",
+        bam="{sample}/align/Aligned.sortedByCoord.out.bam",
     params:
-        rg_sample=lambda x: "{sample}",
-        db_name="reference",
-    threads: 8
+        rg_sample=lambda wildcards: wildcards.sample,
+        chim_segment=20,
+        min_intron_size=50,
+        alignInsertionFlush="Right",
+        twopassMode="Basic",
     log:
-        "log/{sample}_align_vars.txt",
+        main="{sample}/snv-indels/Log.out",
+        progress="{sample}/snv-indels/Log.progress.out",
+        final="{sample}/snv-indels/Log.final.out",
     benchmark:
         repeat("benchmarks/gsnap_{sample}.tsv", config["repeat"])
+    threads: 8
     container:
-        containers["gsnap"]
+        containers["star"]
     shell:
         """
-        gsnap \
-            --dir {input.index} \
-            --db {params.db_name} \
-            --batch 4 \
-            --nthreads {threads} \
-            --novelsplicing 1 \
-            --npaths 1 \
-            --quiet-if-excessive \
-            --read-group-name={params.rg_sample} \
-            --read-group-id={params.rg_sample} \
-            --format sam \
-            --gunzip {input.fq1} {input.fq2} > {output.sam} 2>{log}
+        STAR \
+            --runThreadN {threads} \
+            --genomeDir {input.index} \
+            --sjdbGTFfile {input.gtf} \
+            --readFilesCommand zcat \
+            --outSAMattrRGline "ID:{params.rg_sample}" "SM:{params.rg_sample}" \
+            --outFileNamePrefix $(dirname {output.bam})/ \
+            --outSAMtype BAM SortedByCoordinate \
+            --outSAMunmapped Within \
+            --alignIntronMin {params.min_intron_size} \
+            --alignInsertionFlush {params.alignInsertionFlush} \
+            --twopassMode {params.twopassMode} \
+            --chimOutType WithinBAM \
+            --chimSegmentMin {params.chim_segment} \
+            --quantMode GeneCounts \
+            --readFilesIn {input.fq1:q} {input.fq2:q}
         """
 
 
-rule sort_bamfile:
+rule index_bamfile:
     input:
-        sam=rules.align_vars.output.sam,
+        bam=rules.align_vars.output.bam,
     output:
-        bam="{sample}/align/{sample}.bam",
-        bai="{sample}/align/{sample}.bai",
-    params:
-        tmp=temp("tmp"),
+        bai="{sample}/align/Aligned.sortedByCoord.out.bam.bai",
     log:
-        "log/{sample}_sort_bamfile.txt",
+        "log/index_bamfile.{sample}.txt",
     container:
-        containers["picard"]
+        containers["samtools"]
     shell:
         """
-        mkdir -p {params.tmp}
-        picard -Xmx4G SortSam\
-            I={input.sam} \
-            O={output.bam} \
-            SORT_ORDER=coordinate \
-            VALIDATION_STRINGENCY=SILENT \
-            CREATE_INDEX=true \
-            TMP_DIR={params.tmp} 2>&1 > {log}
+        samtools index {input.bam} 2> {log}
         """
 
 
 rule umi_dedup:
     input:
-        bam=rules.sort_bamfile.output.bam,
-        bai=rules.sort_bamfile.output.bai,
+        bam=rules.align_vars.output.bam,
+        bai=rules.index_bamfile.output.bai,
     output:
         bam="{sample}/{sample}.umi.dedup.bam",
     log:
@@ -279,29 +258,28 @@ use rule align_vars as align_after_umi_trie with:
     input:
         fq1=rules.add_umi_after_umi_trie.output.forw,
         fq2=rules.add_umi_after_umi_trie.output.rev,
-        index=rules.index_reference.output,
+        index=config["star_index"],
+        gtf=config["gtf"],
     output:
-        sam="{sample}/umi-trie/umi-tools/align/{sample}.sam",
+        bam="{sample}/umi-trie/umi-tools/align/Aligned.sortedByCoord.out.bam",
     log:
         "log/{sample}.align_after_umi_trie.txt",
 
 
-# Sort the bamfile
-use rule sort_bamfile as sort_bamfile_after_umi_trie with:
+use rule index_bamfile as index_after_umi_trie with:
     input:
-        sam=rules.align_after_umi_trie.output.sam,
+        bam=rules.align_after_umi_trie.output.bam,
     output:
-        bam="{sample}/umi-trie/umi-tools/align/{sample}.bam",
-        bai="{sample}/umi-trie/umi-tools/align/{sample}.bai",
+        bai="{sample}/umi-trie/umi-tools/align/Aligned.sortedByCoord.out.bam.bai",
     log:
-        "log/{sample}.sort_bamfile_after_umi_trie.txt",
+        "log/{sample}.index_after_umi_trie.txt",
 
 
 # Run umi-tools
 use rule umi_dedup as umi_dedup_after_umi_trie with:
     input:
-        bam=rules.sort_bamfile_after_umi_trie.output.bam,
-        bai=rules.sort_bamfile_after_umi_trie.output.bai,
+        bam=rules.align_after_umi_trie.output.bam,
+        bai=rules.index_after_umi_trie.output.bai,
     output:
         bam="{sample}/umi-trie/umi-tools/{sample}.umi.dedup.bam",
     log:

@@ -34,6 +34,8 @@ of priority.
 | Option               | Type                        | Explanation                                       |
 | ---------------------| --------------------------- | ------------------------------------------------- |
 | repeat               | Optional integer (default=1)| How many times the benchmark should be repeated   |
+| star_index           | Required folder             | STAR-index folder                                 |
+| gtf                  | Required file               | GTF file with transcripts, used by STAR           |
 
 ## Tests
 You can run the tests that accompany this pipeline with the following commands

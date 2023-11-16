@@ -202,7 +202,7 @@ def main(args):
 
         for cluster in clusters:
             if (exp := explain_discordance(cluster)):
-                results[exp] +=2
+                results[exp] += len(cluster)
             else:
                 results['unexplained'] += len(cluster)
                 unexplained += cluster

@@ -2,17 +2,25 @@
   tags:
     - integration
   command: >
-    snakemake
-      --reason
-      --printshellcmds
-      --jobs
-      --latency-wait 5
-      --use-singularity --singularity-args ' --cleanenv --bind /tmp'
-      --singularity-prefix '~/.singularity/cache/snakemake'
-      --config pepfile=tests/pep/project_config.yaml
-      reference=tests/data/reference/ref.fa
-      --snakefile Snakefile
+    bash -c "
+    set -x
+
+    unxz -k tests/data/star/Genome.xz;
+
+    snakemake \
+      --reason \
+      --printshellcmds \
+      --jobs \
+      --latency-wait 5 \
+      --use-singularity --singularity-args ' --cleanenv --bind /tmp' \
+      --singularity-prefix '~/.singularity/cache/snakemake' \
+      --config pepfile=tests/pep/project_config.yaml \
+      --configfile=tests/settings.json \
+      --snakefile Snakefile \
       --notemp
+
+      rm tests/data/star/Genome
+      "
   files:
     - path: sample1/concat/forward.fastq.gz
     - path: sample1/concat/reverse.fastq.gz
@@ -26,7 +34,7 @@
     - path: log/sample1-humid.txt
       contains:
         - Reading data... done.
-    - path: sample1/align/sample1.bam
+    - path: sample1/align/Aligned.sortedByCoord.out.bam
     - path: sample1/sample1.umi.dedup.bam
     - path: umi-stats.tsv
       contains:
@@ -43,8 +51,8 @@
     - path: sample1/umi-tools/umi-trie/forward_dedup.fastq.gz
     - path: sample1/umi-tools/umi-trie/stats.dat
     - path: sample1/umi-trie/umi-tools/sample1.umi.forward.fastq.gz
-    - path: sample1/umi-trie/umi-tools/align/sample1.sam
-    - path: sample1/umi-trie/umi-tools/align/sample1.bam
+    - path: sample1/umi-trie/umi-tools/align/Aligned.sortedByCoord.out.bam
+    - path: sample1/umi-trie/umi-tools/align/Aligned.sortedByCoord.out.bam.bai
     - path: sample1/umi-trie/umi-tools/sample1.umi.dedup.bam
     # The pipeline should generate a MultiQC report file
     - path: multiqc_report.html
@@ -67,16 +75,24 @@
   tags:
     - integration
   command: >
-    snakemake
-      --reason
-      --printshellcmds
-      --jobs
-      --latency-wait 5
-      --use-singularity --singularity-args ' --cleanenv --bind /tmp'
-      --singularity-prefix '~/.singularity/cache/snakemake'
-      --config pepfile=tests/pep/project_subsamples.yaml
-      reference=tests/data/reference/ref.fa
+    bash -c "
+    set -x
+
+    unxz -k tests/data/star/Genome.xz;
+
+    snakemake \
+      --reason \
+      --printshellcmds \
+      --jobs \
+      --latency-wait 5 \
+      --use-singularity --singularity-args ' --cleanenv --bind /tmp' \
+      --singularity-prefix '~/.singularity/cache/snakemake' \
+      --config pepfile=tests/pep/project_subsamples.yaml \
+      --configfile=tests/settings.json \
       --snakefile Snakefile
+
+    rm tests/data/star/Genome;
+    "
   files:
     - path: sample1/concat/forward.fastq.gz
       should_exist: false
@@ -84,6 +100,9 @@
       should_exist: false
     - path: humid/sample1/forward_dedup.fastq.gz
     - path: humid/sample2/forward_dedup.fastq.gz
-    - path: sample1/align/sample1.bam
-    - path: sample2/align/sample2.bam
+    - path: sample1/align/Aligned.sortedByCoord.out.bam
+    - path: sample1/align/Aligned.sortedByCoord.out.bam.bai
+    - path: sample1/sample1.umi.dedup.bam
+    - path: sample2/align/Aligned.sortedByCoord.out.bam
+    - path: sample2/align/Aligned.sortedByCoord.out.bam.bai
     - path: sample2/sample2.umi.dedup.bam

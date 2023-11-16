@@ -1,0 +1,5 @@
+{
+  "reference": "tests/data/reference/ref.fa",
+  "star_index": "tests/data/star",
+  "gtf": "tests/data/reference/hamlet-ref.gtf"
+}
