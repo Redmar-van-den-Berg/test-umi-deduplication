@@ -26,3 +26,21 @@
   tags:
     - sanity
   command: snakefmt --check --verbose .
+
+- name: sanity-invalid-cluster-method
+  tags:
+    - sanity
+  command:
+    snakemake
+      --dryrun
+      --reason
+      --printshellcmds
+      --config
+        pepfile=tests/pep/project_config.yaml
+        cluster_method=blabla
+      --configfile=tests/settings.json
+      --snakefile Snakefile
+  exit_code: 1
+  stdout:
+    contains:
+      - "Unsupported cluster_method: blabla"

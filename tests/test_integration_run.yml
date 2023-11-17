@@ -106,3 +106,57 @@
     - path: sample2/align/Aligned.sortedByCoord.out.bam
     - path: sample2/align/Aligned.sortedByCoord.out.bam.bai
     - path: sample2/sample2.umi.dedup.bam
+
+- name: integration-directional
+  tags:
+    - integration
+  command: >
+    bash -c "
+    set -x
+
+    unxz -k tests/data/star/Genome.xz;
+
+    snakemake \
+      --reason \
+      --printshellcmds \
+      --jobs \
+      --latency-wait 5 \
+      --use-singularity --singularity-args ' --cleanenv --bind /tmp' \
+      --singularity-prefix '~/.singularity/cache/snakemake' \
+      --config \
+        pepfile=tests/pep/project_config.yaml \
+        cluster_method=directional \
+      --configfile=tests/settings.json \
+      --snakefile Snakefile \
+      --notemp \
+      --until humid umi_dedup
+
+      rm tests/data/star/Genome
+      "
+
+- name: integration-maximum
+  tags:
+    - integration
+  command: >
+    bash -c "
+    set -x
+
+    unxz -k tests/data/star/Genome.xz;
+
+    snakemake \
+      --reason \
+      --printshellcmds \
+      --jobs \
+      --latency-wait 5 \
+      --use-singularity --singularity-args ' --cleanenv --bind /tmp' \
+      --singularity-prefix '~/.singularity/cache/snakemake' \
+      --config \
+        pepfile=tests/pep/project_config.yaml \
+        cluster_method=maximum\
+      --configfile=tests/settings.json \
+      --snakefile Snakefile \
+      --notemp \
+      --until humid umi_dedup
+
+      rm tests/data/star/Genome
+      "

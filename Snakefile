@@ -49,6 +49,8 @@ rule humid:
         forw=rules.concat.output.forw,
         rev=rules.concat.output.rev,
         umi=rules.concat.output.umi,
+    params:
+        cluster_method="-x" if config["cluster_method"] == "maximum" else "",
     output:
         forw="humid/{sample}/forward_dedup.fastq.gz",
         rev="humid/{sample}/reverse_dedup.fastq.gz",
@@ -66,6 +68,7 @@ rule humid:
         mkdir -p $folder
 
         humid \
+            {params.cluster_method} \
             -d $folder \
             -s \
             {input.forw} {input.rev} {input.umi} 2> {log}
@@ -159,6 +162,10 @@ rule umi_dedup:
     input:
         bam=rules.align_vars.output.bam,
         bai=rules.index_bamfile.output.bai,
+    params:
+        cluster_method="--method cluster"
+        if config["cluster_method"] == "maximum"
+        else "--method directional",
     output:
         bam="{sample}/{sample}.umi.dedup.bam",
     log:
@@ -173,6 +180,7 @@ rule umi_dedup:
         export TMPDIR=tmp
 
         umi_tools dedup \
+                {params.cluster_method} \
                 --stdin={input.bam} \
                 --stdout={output.bam} > {log}
         """

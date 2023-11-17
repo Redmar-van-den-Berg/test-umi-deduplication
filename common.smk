@@ -12,6 +12,7 @@ containers = {
 
 default = dict()
 default["repeat"] = 1
+default["cluster_method"] = "directional"
 
 
 pepfile: config["pepfile"]
@@ -24,6 +25,9 @@ default.update(pep.config.get("test-umi-deduplication", dict()))
 # and the settings from the PEP file
 default.update(config)
 
+# Check to see if the cluster method is supported
+if default["cluster_method"] not in ["directional", "maximum"]:
+    raise RuntimeError(f"Unsupported cluster_method: {default['cluster_method']}")
 # Set the updated dict as the configuration for the pipeline
 config = default
 
