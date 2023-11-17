@@ -158,7 +158,7 @@ rule index_bamfile:
         """
 
 
-rule umi_dedup:
+rule umi_tools:
     input:
         bam=rules.align_vars.output.bam,
         bai=rules.index_bamfile.output.bai,
@@ -213,7 +213,7 @@ rule bam_to_fastq:
         forw=rules.concat.output.forw,
         rev=rules.concat.output.rev,
         umi=rules.concat.output.umi,
-        bam=rules.umi_dedup.output.bam,
+        bam=rules.umi_tools.output.bam,
         src=srcdir("scripts/fastq-from-bam.py"),
     output:
         forw="{sample}/umi-tools/forward.fastq.gz",
@@ -284,7 +284,7 @@ use rule index_bamfile as index_after_umi_trie with:
 
 
 # Run umi-tools
-use rule umi_dedup as umi_dedup_after_umi_trie with:
+use rule umi_tools as umi_tools_after_umi_trie with:
     input:
         bam=rules.align_after_umi_trie.output.bam,
         bai=rules.index_after_umi_trie.output.bai,
