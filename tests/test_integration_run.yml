@@ -70,6 +70,9 @@
     - path: benchmarks/gsnap_sample1.tsv
     - path: benchmarks/humid_sample1.tsv
     - path: benchmarks/umi_tools_sample1.tsv
+    - path: benchmarks/s.tsv
+    - path: benchmarks/max_rss.tsv
+    - path: benchmarks/cpu_time.tsv
 
 - name: integration-subsamples
   tags:

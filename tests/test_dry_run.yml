@@ -22,6 +22,9 @@
       - sample1/umi-trie/umi-tools/sample1.umi.forward.fastq.gz
       - sample1/umi-trie/umi-tools/align/Aligned.sortedByCoord.out.bam
       - sample1/umi-trie/umi-tools/sample1.umi.dedup.bam
+      - benchmarks/s.tsv
+      - benchmarks/max_rss.tsv
+      - benchmarks/cpu_time.tsv
 
 - name: dry-run-subsamples
   tags:

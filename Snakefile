@@ -17,6 +17,7 @@ rule all:
             "{sample}/umi-trie/umi-tools/{sample}.umi.dedup.bam", sample=samples
         ),
         multiqc="multiqc_report.html",
+        benchmarks="benchmarks/s.tsv",
 
 
 rule concat:
@@ -118,7 +119,7 @@ rule align_vars:
         progress="{sample}/snv-indels/Log.progress.out",
         final="{sample}/snv-indels/Log.final.out",
     benchmark:
-        repeat("benchmarks/gsnap_{sample}.tsv", config["repeat"])
+        repeat("benchmarks/STAR_{sample}.tsv", config["repeat"])
     threads: 8
     container:
         containers["star"]
@@ -245,6 +246,8 @@ use rule humid as humid_after_umi_tools with:
         stats="{sample}/umi-tools/umi-trie/stats.dat",
     log:
         "log/{sample}.humid_after_umi_tools.txt",
+    benchmark:
+        repeat("benchmarks/humid_after_umi_tools_{sample}.tsv", config["repeat"])
 
 
 # Add the UMI's to the read name after running UMI-trie
@@ -272,6 +275,8 @@ use rule align_vars as align_after_umi_trie with:
         bam="{sample}/umi-trie/umi-tools/align/Aligned.sortedByCoord.out.bam",
     log:
         "log/{sample}.align_after_umi_trie.txt",
+    benchmark:
+        repeat("benchmarks/STAR_after_umi_trie_{sample}.tsv", config["repeat"])
 
 
 use rule index_bamfile as index_after_umi_trie with:
@@ -292,6 +297,8 @@ use rule umi_tools as umi_tools_after_umi_trie with:
         bam="{sample}/umi-trie/umi-tools/{sample}.umi.dedup.bam",
     log:
         "log/{sample}_umi_dedup_after_umi_trie.log",
+    benchmark:
+        repeat("benchmarks/umi_tools_after_umi_trie_{sample}.tsv", config["repeat"])
 
 
 # Run MultiQC on HUMID output
@@ -313,4 +320,30 @@ rule multiqc:
         done
 
         multiqc --force --file-list multiqc_filelist.txt
+        """
+
+
+rule gather_benchmarks:
+    input:
+        humid=expand("benchmarks/humid_{sample}.tsv", sample=samples),
+        star=expand("benchmarks/STAR_{sample}.tsv", sample=samples),
+        umi_tools=expand("benchmarks/umi_tools_{sample}.tsv", sample=samples),
+        script=srcdir("scripts/parse-benchmark.py"),
+    params:
+        samples=samples,
+    output:
+        seconds="benchmarks/s.tsv",
+        cpu_time="benchmarks/cpu_time.tsv",
+        max_rss="benchmarks/max_rss.tsv",
+    log:
+        "log/gather_benchmarks.txt",
+    container:
+        containers["debian"]
+    shell:
+        """
+        for column in s cpu_time max_rss; do
+          python3 {input.script} \
+              --samples {params.samples} \
+              --tools humid STAR umi_tools \
+              --column $column > benchmarks/$s.tsv 2>> {log}
         """
