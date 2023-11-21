@@ -67,7 +67,7 @@
       # We should only include the specified log files in the report
       must_not_contain:
         - umi-trie
-    - path: benchmarks/gsnap_sample1.tsv
+    - path: benchmarks/STAR_sample1.tsv
     - path: benchmarks/humid_sample1.tsv
     - path: benchmarks/umi_tools_sample1.tsv
     - path: benchmarks/s.tsv

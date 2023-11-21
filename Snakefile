@@ -346,4 +346,5 @@ rule gather_benchmarks:
               --samples {params.samples} \
               --tools humid STAR umi_tools \
               --column $column > benchmarks/$s.tsv 2>> {log}
+        done
         """
