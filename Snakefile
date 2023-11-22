@@ -338,13 +338,13 @@ rule gather_benchmarks:
     log:
         "log/gather_benchmarks.txt",
     container:
-        containers["debian"]
+        containers["dnaio"]
     shell:
         """
         for column in s cpu_time max_rss; do
           python3 {input.script} \
               --samples {params.samples} \
               --tools humid STAR umi_tools \
-              --column $column > benchmarks/$s.tsv 2>> {log}
+              --column ${{column}} > benchmarks/${{column}}.tsv 2>> {log}
         done
         """

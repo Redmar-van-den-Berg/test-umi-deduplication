@@ -27,6 +27,8 @@ def parse_benchmark_file(fname: str) -> Generator[Dict[str, float], Any, Any]:
             spline = line.strip('\n').split('\t')
             # Remove the human readable field
             del spline[1]
+            # Convert '-' to '0', which happens in the integration tests
+            spline = ['0' if x == '-' else x for x in spline]
             yield {key: float(value) for key, value in zip(header, spline)}
 
 def average_benchmark(fname: str) -> Dict[str, float]:
