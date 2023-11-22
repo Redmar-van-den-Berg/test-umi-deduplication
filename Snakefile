@@ -305,6 +305,7 @@ use rule umi_tools as umi_tools_after_umi_trie with:
 rule multiqc:
     input:
         stats=get_stats(),
+        config=srcdir("cfg/multiqc.yml"),
     output:
         html="multiqc_report.html",
     log:
@@ -319,7 +320,10 @@ rule multiqc:
             echo $fname >> multiqc_filelist.txt
         done
 
-        multiqc --force --file-list multiqc_filelist.txt
+        multiqc \
+        --force \
+        --file-list multiqc_filelist.txt \
+        --config {input.config} 2> {log}
         """
 
 

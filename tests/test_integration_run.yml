@@ -64,9 +64,11 @@
         # The report should contain both samples
         - sample1
         - sample2
-      # We should only include the specified log files in the report
       must_not_contain:
+        # We should only include the specified log files in the report
         - umi-trie
+        # We should hide the data paths from the MultiQC report
+        - "based on data in:"
     - path: benchmarks/STAR_sample1.tsv
     - path: benchmarks/humid_sample1.tsv
     - path: benchmarks/umi_tools_sample1.tsv
