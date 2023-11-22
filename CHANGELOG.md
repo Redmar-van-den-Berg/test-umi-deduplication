@@ -10,6 +10,7 @@ that users understand how the changes affect the new version.
 
 v0.0.1
 ---------------------------
++ Rename UMI-Tools sample name in MultiQC
 + Add support for clustering method
 + Replace GSNAP aligner with STAR
 + Add benchmarking to HUMID and UMI-Tools

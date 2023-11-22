@@ -69,6 +69,8 @@
         - umi-trie
         # We should hide the data paths from the MultiQC report
         - "based on data in:"
+        # Hide UMI-Tools file names
+        - "sample1/align/Aligned.sortedByCoord.out.bam"
     - path: benchmarks/STAR_sample1.tsv
     - path: benchmarks/humid_sample1.tsv
     - path: benchmarks/umi_tools_sample1.tsv
