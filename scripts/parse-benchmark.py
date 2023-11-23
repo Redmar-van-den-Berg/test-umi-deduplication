@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import argparse
-from typing import Any, Dict, Generator
+from typing import Any, Dict, List, Generator
 from collections import defaultdict
 from statistics import mean
 
@@ -16,18 +16,21 @@ expected = [
     "cpu_time",
 ]
 
+def remove_human_readable(records: List) -> None:
+    """The second fields holds time in h:m:s format"""
+    del records[1]
+
 def parse_benchmark_file(fname: str) -> Generator[Dict[str, float], Any, Any]:
     """Return records from a benchmark file"""
     with open(fname) as fin:
         header = next(fin).strip("\n").split("\t")
-        # Remove the human readable field
-        del header[1]
+        remove_human_readable(header)
         assert header == expected
         for line in fin:
             spline = line.strip('\n').split('\t')
-            # Remove the human readable field
-            del spline[1]
-            # Convert '-' to '0', which happens in the integration tests
+            remove_human_readable(spline)
+            # Convert '-' to '0'. '-' happens when the analysis is too fast to
+            # measure, which can happen during testing
             spline = ['0' if x == '-' else x for x in spline]
             yield {key: float(value) for key, value in zip(header, spline)}
 
