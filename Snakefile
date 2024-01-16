@@ -115,9 +115,9 @@ rule align_vars:
         alignInsertionFlush="Right",
         twopassMode="Basic",
     log:
-        main="{sample}/snv-indels/Log.out",
-        progress="{sample}/snv-indels/Log.progress.out",
-        final="{sample}/snv-indels/Log.final.out",
+        main="{sample}/align/Log.out",
+        progress="{sample}/align/Log.progress.out",
+        final="{sample}/align/Log.final.out",
     benchmark:
         repeat("benchmarks/STAR_{sample}.tsv", config["repeat"])
     threads: 8
@@ -141,6 +141,22 @@ rule align_vars:
             --chimSegmentMin {params.chim_segment} \
             --quantMode GeneCounts \
             --readFilesIn {input.fq1:q} {input.fq2:q}
+        """
+
+
+rule copy_star_log:
+    """This is needed to ensure we get the correct sample name in MultiQC"""
+    input:
+        log=rules.align_vars.log.final,
+    output:
+        log="multiqc-logs/{sample}/Log.final.out",
+    container:
+        containers["debian"]
+    log:
+        "log/copy_star_log.{sample}.txt",
+    shell:
+        """
+        cp -v {input.log} {output.log} 2> {log}
         """
 
 

@@ -61,6 +61,8 @@
         - HUMID
         # The report should contain a section for UMI-Tools
         - UMI-tools 
+        # The report should contain a section for STAR alignment statistics
+        - STAR
         # The report should contain both samples
         - sample1
         - sample2
