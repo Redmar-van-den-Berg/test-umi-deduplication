@@ -3,7 +3,7 @@
     - integration
   command: >
     bash -c "
-    set -x
+    set -xe
 
     unxz -k tests/data/star/Genome.xz;
 
@@ -83,7 +83,7 @@
     - integration
   command: >
     bash -c "
-    set -x
+    set -xe
 
     unxz -k tests/data/star/Genome.xz;
 
@@ -119,7 +119,7 @@
     - integration
   command: >
     bash -c "
-    set -x
+    set -xe
 
     unxz -k tests/data/star/Genome.xz;
 
@@ -136,7 +136,7 @@
       --configfile=tests/settings.json \
       --snakefile Snakefile \
       --notemp \
-      --until humid umi_dedup
+      --until humid umi_tools
 
       rm tests/data/star/Genome
       "
@@ -146,7 +146,7 @@
     - integration
   command: >
     bash -c "
-    set -x
+    set -xe
 
     unxz -k tests/data/star/Genome.xz;
 
@@ -159,11 +159,11 @@
       --singularity-prefix '~/.singularity/cache/snakemake' \
       --config \
         pepfile=tests/pep/project_config.yaml \
-        cluster_method=maximum\
+        cluster_method=maximum \
       --configfile=tests/settings.json \
       --snakefile Snakefile \
       --notemp \
-      --until humid umi_dedup
+      --until humid umi_tools
 
       rm tests/data/star/Genome
       "

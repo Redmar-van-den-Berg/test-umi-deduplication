@@ -304,7 +304,7 @@ use rule umi_tools as umi_tools_after_umi_trie with:
 # Run MultiQC on HUMID output
 rule multiqc:
     input:
-        stats=get_stats(),
+        stats=get_log_files(),
         config=srcdir("cfg/multiqc.yml"),
     output:
         html="multiqc_report.html",

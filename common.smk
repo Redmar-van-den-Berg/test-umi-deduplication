@@ -58,7 +58,7 @@ def get_umi(wildcards):
     return get_fastq(wildcards, "umi")
 
 
-def get_stats():
+def get_log_files():
     """Generate paths for each of the relevant log files"""
     humid = [f"humid/{sample}/stats.dat" for sample in samples]
     umi_tools = [f"log/{sample}_umi_dedup.log" for sample in samples]
