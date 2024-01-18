@@ -338,6 +338,8 @@ rule multiqc:
 
         multiqc \
         --force \
+        --dirs \
+        --dirs-depth 3 \
         --file-list multiqc_filelist.txt \
         --config {input.config} 2> {log}
         """
