@@ -25,7 +25,6 @@
       - benchmarks/s.tsv
       - benchmarks/max_rss.tsv
       - benchmarks/cpu_time.tsv
-      - multiqc-logs/sample1/Log.final.out
 
 - name: dry-run-subsamples
   tags:
