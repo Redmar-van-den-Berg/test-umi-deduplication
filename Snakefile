@@ -144,22 +144,6 @@ rule align_vars:
         """
 
 
-rule copy_star_log:
-    """This is needed to ensure we get the correct sample name in MultiQC"""
-    input:
-        log=rules.align_vars.log.final,
-    output:
-        log="multiqc-logs/{sample}/Log.final.out",
-    container:
-        containers["debian"]
-    log:
-        "log/copy_star_log.{sample}.txt",
-    shell:
-        """
-        cp -v {input.log} {output.log} 2> {log}
-        """
-
-
 rule index_bamfile:
     input:
         bam=rules.align_vars.output.bam,
