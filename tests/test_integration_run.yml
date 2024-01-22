@@ -77,6 +77,7 @@
     - path: benchmarks/s.tsv
     - path: benchmarks/max_rss.tsv
     - path: benchmarks/cpu_time.tsv
+    - path: multiqc_report_humid_after_umi_tools.html
 
 - name: integration-subsamples
   tags:

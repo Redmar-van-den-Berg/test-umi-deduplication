@@ -17,6 +17,7 @@ rule all:
             "{sample}/humid/umi-tools/{sample}.bam", sample=samples
         ),
         multiqc="multiqc_report.html",
+        multiqc_humid_after_umi_tools="multiqc_report_humid_after_umi_tools.html",
         benchmarks="benchmarks/s.tsv",
 
 
@@ -306,6 +307,8 @@ rule multiqc:
     input:
         stats=get_log_files(),
         config=srcdir("cfg/multiqc.yml"),
+    params:
+        filelist="multiqc_filelist.txt",
     output:
         html="multiqc_report.html",
     log:
@@ -314,10 +317,10 @@ rule multiqc:
         containers["multiqc"]
     shell:
         """
-        rm -f multiqc_filelist.txt
+        rm -f {params.filelist}
 
         for fname in {input.stats}; do
-            echo $fname >> multiqc_filelist.txt
+            echo $fname >> {params.filelist}
         done
 
         multiqc \
@@ -326,11 +329,22 @@ rule multiqc:
         --dirs-depth 2 \
         --fullnames \
         --fn_as_s_name \
-        --file-list multiqc_filelist.txt \
+        --file-list {params.filelist} \
         --config {input.config} \
         --filename {output.html} 2> {log}
         """
 
+# Run MultiQC on HUMID output after deduplication with UMI-Tools
+use rule multiqc as multiqc_humid_after_umi_tools with:
+    input:
+        stats=get_humid_after_umi_tools(),
+        config=srcdir("cfg/multiqc.yml"),
+    params:
+        filelist="multiqc_humid_after_umi_tools_filelist.txt",
+    output:
+        html="multiqc_report_humid_after_umi_tools.html",
+    log:
+        "log/multiqc_humid_after_umi_tools.txt"
 
 rule gather_benchmarks:
     input:

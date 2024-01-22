@@ -25,6 +25,7 @@
       - benchmarks/s.tsv
       - benchmarks/max_rss.tsv
       - benchmarks/cpu_time.tsv
+      - rule multiqc_humid_after_umi_tools
 
 - name: dry-run-subsamples
   tags:
