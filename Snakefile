@@ -7,14 +7,14 @@ rule all:
             "humid/{sample}/forward_dedup.fastq.gz",
             sample=samples,
         ),
-        bam=expand("{sample}/{sample}.umi.dedup.bam", sample=samples),
+        bam=expand("{sample}/umi-tools/{sample}.bam", sample=samples),
         stats="umi-stats.tsv",
         fastq=expand("{sample}/umi-tools/forward.fastq.gz", sample=samples),
-        trie_after_umi_tools=expand(
-            "{sample}/umi-tools/umi-trie/forward_dedup.fastq.gz", sample=samples
+        humid_after_umi_tools=expand(
+            "{sample}/umi-tools/humid/forward_dedup.fastq.gz", sample=samples
         ),
-        umi_tools_after_trie=expand(
-            "{sample}/umi-trie/umi-tools/{sample}.umi.dedup.bam", sample=samples
+        umi_tools_after_humid=expand(
+            "{sample}/humid/umi-tools/{sample}.bam", sample=samples
         ),
         multiqc="multiqc_report.html",
         benchmarks="benchmarks/s.tsv",
@@ -45,7 +45,7 @@ rule concat:
 
 
 rule humid:
-    """Run umi-trie on the fastq files"""
+    """Run HUMID on the fastq files"""
     input:
         forw=rules.concat.output.forw,
         rev=rules.concat.output.rev,
@@ -168,9 +168,9 @@ rule umi_tools:
         if config["cluster_method"] == "maximum"
         else "--method directional",
     output:
-        bam="{sample}/{sample}.umi.dedup.bam",
+        bam="{sample}/umi-tools/{sample}.bam",
     log:
-        "log/{sample}_umi_dedup.log",
+        "log/{sample}_umi_tools.log",
     benchmark:
         repeat("benchmarks/umi_tools_{sample}.tsv", config["repeat"])
     container:
@@ -189,8 +189,8 @@ rule umi_tools:
 
 rule parse_umi_log:
     input:
-        umi_tools=expand("log/{sample}_umi_dedup.log", sample=samples),
-        umi_trie=expand("humid/{sample}/stats.dat", sample=samples),
+        umi_tools=expand("log/{sample}_umi_tools.log", sample=samples),
+        humid=expand("humid/{sample}/stats.dat", sample=samples),
         parse_umi_log=srcdir("scripts/parse-umi-log.py"),
     params:
         samples=samples,
@@ -204,7 +204,7 @@ rule parse_umi_log:
         """
         python3 {input.parse_umi_log} \
                 --samples {params.samples} \
-                --umi-trie {input.umi_trie} \
+                --humid {input.humid} \
                 --umi-tools {input.umi_tools} > {output} 2> {log}
         """
 
@@ -233,72 +233,72 @@ rule bam_to_fastq:
         """
 
 
-# Run umi-trie on the output of umi-tools
+# Run HUMID on the output of umi-tools
 use rule humid as humid_after_umi_tools with:
     input:
         forw=rules.bam_to_fastq.output.forw,
         rev=rules.bam_to_fastq.output.rev,
         umi=rules.bam_to_fastq.output.umi,
     output:
-        forw="{sample}/umi-tools/umi-trie/forward_dedup.fastq.gz",
-        rev="{sample}/umi-tools/umi-trie/reverse_dedup.fastq.gz",
-        umi="{sample}/umi-tools/umi-trie/umi_dedup.fastq.gz",
-        stats="{sample}/umi-tools/umi-trie/stats.dat",
+        forw="{sample}/umi-tools/humid/forward_dedup.fastq.gz",
+        rev="{sample}/umi-tools/humid/reverse_dedup.fastq.gz",
+        umi="{sample}/umi-tools/humid/umi_dedup.fastq.gz",
+        stats="{sample}/umi-tools/humid/stats.dat",
     log:
         "log/{sample}.humid_after_umi_tools.txt",
     benchmark:
         repeat("benchmarks/humid_after_umi_tools_{sample}.tsv", config["repeat"])
 
 
-# Add the UMI's to the read name after running UMI-trie
-use rule add_umi as add_umi_after_umi_trie with:
+# Add the UMI's to the read name after running HUMID
+use rule add_umi as add_umi_after_humid with:
     input:
         forw=rules.humid.output.forw,
         rev=rules.humid.output.rev,
         umi=rules.humid.output.umi,
         add_umi=srcdir("scripts/add-umi.py"),
     output:
-        forw="{sample}/umi-trie/umi-tools/{sample}.umi.forward.fastq.gz",
-        rev="{sample}/umi-trie/umi-tools/{sample}.umi.reverse.fastq.gz",
+        forw="{sample}/humid/umi-tools/{sample}.umi.forward.fastq.gz",
+        rev="{sample}/humid/umi-tools/{sample}.umi.reverse.fastq.gz",
     log:
-        "log/{sample}.add_umi_after_umi_trie.txt",
+        "log/{sample}.add_umi_after_humid.txt",
 
 
 # Align the reads to the reference
-use rule align_vars as align_after_umi_trie with:
+use rule align_vars as align_after_humid with:
     input:
-        fq1=rules.add_umi_after_umi_trie.output.forw,
-        fq2=rules.add_umi_after_umi_trie.output.rev,
+        fq1=rules.add_umi_after_humid.output.forw,
+        fq2=rules.add_umi_after_humid.output.rev,
         index=config["star_index"],
         gtf=config["gtf"],
     output:
-        bam="{sample}/umi-trie/umi-tools/align/Aligned.sortedByCoord.out.bam",
+        bam="{sample}/humid/umi-tools/align/Aligned.sortedByCoord.out.bam",
     log:
-        "log/{sample}.align_after_umi_trie.txt",
+        "log/{sample}.align_after_humid.txt",
     benchmark:
-        repeat("benchmarks/STAR_after_umi_trie_{sample}.tsv", config["repeat"])
+        repeat("benchmarks/STAR_after_humid_{sample}.tsv", config["repeat"])
 
 
-use rule index_bamfile as index_after_umi_trie with:
+use rule index_bamfile as index_after_humid with:
     input:
-        bam=rules.align_after_umi_trie.output.bam,
+        bam=rules.align_after_humid.output.bam,
     output:
-        bai="{sample}/umi-trie/umi-tools/align/Aligned.sortedByCoord.out.bam.bai",
+        bai="{sample}/humid/umi-tools/align/Aligned.sortedByCoord.out.bam.bai",
     log:
-        "log/{sample}.index_after_umi_trie.txt",
+        "log/{sample}.index_after_humid.txt",
 
 
 # Run umi-tools
-use rule umi_tools as umi_tools_after_umi_trie with:
+use rule umi_tools as umi_tools_after_humid with:
     input:
-        bam=rules.align_after_umi_trie.output.bam,
-        bai=rules.index_after_umi_trie.output.bai,
+        bam=rules.align_after_humid.output.bam,
+        bai=rules.index_after_humid.output.bai,
     output:
-        bam="{sample}/umi-trie/umi-tools/{sample}.umi.dedup.bam",
+        bam="{sample}/humid/umi-tools/{sample}.bam",
     log:
-        "log/{sample}_umi_dedup_after_umi_trie.log",
+        "log/{sample}_umi_tools_after_humid.log",
     benchmark:
-        repeat("benchmarks/umi_tools_after_umi_trie_{sample}.tsv", config["repeat"])
+        repeat("benchmarks/umi_tools_after_humid_{sample}.tsv", config["repeat"])
 
 
 # Run MultiQC on HUMID output

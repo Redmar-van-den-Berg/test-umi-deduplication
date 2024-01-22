@@ -92,12 +92,12 @@ def parse_stats(logfile):
             field, value = line.strip().split(': ')
             data[field] = int(value)
     # Rename some fields
-    data['umi_trie_output'] = data['clusters']
-    data['umi_trie_input'] = data['usable']
+    data['humid_output'] = data['clusters']
+    data['humid_input'] = data['usable']
 
     frac_unique = data['clusters'] / data['usable']
     frac_dup = round(1-frac_unique, 2)
-    data['umi_trie_perc_duplicates'] = frac_dup * 100
+    data['humid_perc_duplicates'] = frac_dup * 100
     return data
 
 def main(args):
@@ -108,14 +108,14 @@ def main(args):
         results['sample_name'] = sample
         data[sample] = results
 
-    # Read the umi-trie stat files
-    for sample, logfile in zip(args.samples, args.umi_trie):
+    # Read the HUMID stat files
+    for sample, logfile in zip(args.samples, args.humid):
         results = parse_stats(logfile)
         data[sample].update(results)
 
 
     header = ['sample_name', 'input_reads', 'umi_tools_output', 'umi_tools_perc_duplicates',
-            'umi_trie_input', 'umi_trie_output', 'umi_trie_perc_duplicates']
+            'humid_input', 'humid_output', 'humid_perc_duplicates']
 
     print(*header, sep='\t')
 
@@ -143,11 +143,11 @@ if __name__ == '__main__':
                         help='stdout from umi_tools dedup')
     parser.add_argument('--samples', required=True, nargs='+',
                         help='Sample names, on order')
-    parser.add_argument('--umi-trie', required=True, nargs='+',
-                        help='stats.dat from umi-trie')
+    parser.add_argument('--humid', required=True, nargs='+',
+                        help='stats.dat from HUMID')
 
     arguments = parser.parse_args()
     assert len(arguments.umi_tools) == len(arguments.samples)
-    assert len(arguments.umi_trie) == len(arguments.samples)
+    assert len(arguments.humid) == len(arguments.samples)
     init_logger(arguments)
     main(arguments)

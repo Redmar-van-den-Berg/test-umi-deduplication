@@ -35,10 +35,10 @@
       contains:
         - Reading data... done.
     - path: sample1/align/Aligned.sortedByCoord.out.bam
-    - path: sample1/sample1.umi.dedup.bam
+    - path: sample1/umi-tools/sample1.bam
     - path: umi-stats.tsv
       contains:
-        - umi_trie_perc_duplicates
+        - humid_perc_duplicates
         - umi_tools_perc_duplicates
         - sample1
         - sample2
@@ -48,12 +48,12 @@
     - path: sample1/umi-tools/forward.fastq.gz
     - path: sample1/umi-tools/reverse.fastq.gz
     - path: sample1/umi-tools/umi.fastq.gz
-    - path: sample1/umi-tools/umi-trie/forward_dedup.fastq.gz
-    - path: sample1/umi-tools/umi-trie/stats.dat
-    - path: sample1/umi-trie/umi-tools/sample1.umi.forward.fastq.gz
-    - path: sample1/umi-trie/umi-tools/align/Aligned.sortedByCoord.out.bam
-    - path: sample1/umi-trie/umi-tools/align/Aligned.sortedByCoord.out.bam.bai
-    - path: sample1/umi-trie/umi-tools/sample1.umi.dedup.bam
+    - path: sample1/umi-tools/humid/forward_dedup.fastq.gz
+    - path: sample1/umi-tools/humid/stats.dat
+    - path: sample1/humid/umi-tools/sample1.umi.forward.fastq.gz
+    - path: sample1/humid/umi-tools/align/Aligned.sortedByCoord.out.bam
+    - path: sample1/humid/umi-tools/align/Aligned.sortedByCoord.out.bam.bai
+    - path: sample1/humid/umi-tools/sample1.bam
     # The pipeline should generate a MultiQC report file
     - path: multiqc_report.html
       contains:
@@ -67,8 +67,6 @@
         - sample1
         - sample2
       must_not_contain:
-        # We should only include the specified log files in the report
-        - umi-trie
         # We should hide the data paths from the MultiQC report
         - "based on data in:"
         # Hide UMI-Tools file names
@@ -111,10 +109,10 @@
     - path: humid/sample2/forward_dedup.fastq.gz
     - path: sample1/align/Aligned.sortedByCoord.out.bam
     - path: sample1/align/Aligned.sortedByCoord.out.bam.bai
-    - path: sample1/sample1.umi.dedup.bam
+    - path: sample1/umi-tools/sample1.bam
     - path: sample2/align/Aligned.sortedByCoord.out.bam
     - path: sample2/align/Aligned.sortedByCoord.out.bam.bai
-    - path: sample2/sample2.umi.dedup.bam
+    - path: sample2/umi-tools/sample2.bam
     - path: multiqc_report.html
       must_not_contain:
         - integration-subsamples

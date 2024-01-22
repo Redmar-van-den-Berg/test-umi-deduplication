@@ -3,4 +3,4 @@ sample_names_replace_regex: True
 sample_names_replace:
   "(.+) \\| align \\| Log.final.out": "\\1"
   "humid \\| (.+) \\| (.+)": "\\1"
-  "(.+) \\| log \\| (.+)_umi_dedup.log": "\\2"
+  "(.+) \\| log \\| (.+)_umi_tools.log": "\\2"
