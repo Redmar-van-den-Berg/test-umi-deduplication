@@ -323,9 +323,12 @@ rule multiqc:
         multiqc \
         --force \
         --dirs \
-        --dirs-depth 3 \
+        --dirs-depth 2 \
+        --fullnames \
+        --fn_as_s_name \
         --file-list multiqc_filelist.txt \
-        --config {input.config} 2> {log}
+        --config {input.config} \
+        --filename {output.html} 2> {log}
         """
 
 

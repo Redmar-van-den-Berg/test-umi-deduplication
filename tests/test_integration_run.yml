@@ -115,6 +115,9 @@
     - path: sample2/align/Aligned.sortedByCoord.out.bam
     - path: sample2/align/Aligned.sortedByCoord.out.bam.bai
     - path: sample2/sample2.umi.dedup.bam
+    - path: multiqc_report.html
+      must_not_contain:
+        - integration-subsamples
 
 - name: integration-directional
   tags:
