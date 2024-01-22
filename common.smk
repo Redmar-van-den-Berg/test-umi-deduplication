@@ -65,6 +65,7 @@ def get_log_files():
     STAR = [f"{sample}/align/Log.final.out" for sample in samples]
     return humid + umi_tools + STAR
 
+
 def get_humid_after_umi_tools():
     """Generate paths for the HUMID stats file after UMI-Tools"""
     return [f"{sample}/umi-tools/humid/stats.dat" for sample in samples]
