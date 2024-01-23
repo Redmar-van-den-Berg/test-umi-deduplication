@@ -18,6 +18,7 @@ rule all:
         ),
         multiqc="multiqc_report.html",
         multiqc_humid_after_umi_tools="multiqc_report_humid_after_umi_tools.html",
+        mutliqc_umi_tools_after_humid="multiqc_report_umi_tools_after_humid.html",
         benchmarks="benchmarks/s.tsv",
 
 
@@ -348,6 +349,20 @@ use rule multiqc as multiqc_humid_after_umi_tools with:
         html="multiqc_report_humid_after_umi_tools.html",
     log:
         "log/multiqc_humid_after_umi_tools.txt",
+
+
+# Run MultiQC on UMI-Tools output after deduplication with HUMID
+use rule multiqc as multiqc_umi_tools_after_humid with:
+    input:
+        stats=get_umi_tools_after_humid(),
+        config=srcdir("cfg/multiqc_umi_tools_after_humid.yml"),
+    params:
+        filelist="multiqc_umi_tools_after_humid_filelist.txt",
+        depth=1,
+    output:
+        html="multiqc_report_umi_tools_after_humid.html",
+    log:
+        "log/multiqc_umi_tools_after_humid.txt",
 
 
 rule gather_benchmarks:

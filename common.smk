@@ -69,3 +69,8 @@ def get_log_files():
 def get_humid_after_umi_tools():
     """Generate paths for the HUMID stats file after UMI-Tools"""
     return [f"{sample}/umi-tools/humid/stats.dat" for sample in samples]
+
+
+def get_umi_tools_after_humid():
+    """Generate paths for the UMI-Tools log files after HUMID"""
+    return [f"log/{sample}_umi_tools_after_humid.log" for sample in samples]
