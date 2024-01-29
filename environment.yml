@@ -9,7 +9,7 @@ dependencies:
   - black=21.12b0
   - peppy=0.35
   - pysam
-  - pytest-workflow=1.6.0
+  - pytest-workflow=2.0.1
   - python=3.10.2
   - snakemake-minimal=6.14.0
   - snakefmt=0.4.4
