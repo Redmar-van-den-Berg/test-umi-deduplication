@@ -54,6 +54,7 @@ rule humid:
         umi=rules.concat.output.umi,
     params:
         cluster_method="-x" if config["cluster_method"] == "maximum" else "",
+        stack_size_kb=102400,
     output:
         forw="humid/{sample}/forward_dedup.fastq.gz",
         rev="humid/{sample}/reverse_dedup.fastq.gz",
@@ -69,6 +70,8 @@ rule humid:
         """
         folder=$(dirname {output.forw})
         mkdir -p $folder
+
+        ulimit -Ss {params.stack_size_kb}
 
         humid \
             {params.cluster_method} \

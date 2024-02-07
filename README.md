@@ -51,3 +51,7 @@ pytest --kwd --tag dry-run
 # Test the performance of the pipeline by running on the test data
 pytest --kwd --tag integration
 ```
+
+## Troubleshooting
+If HUMID crashes when using the `maximum` clustering method, try increasing the
+stack_size_kb` parameter of the `humid` rule.
