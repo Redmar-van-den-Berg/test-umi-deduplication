@@ -53,7 +53,7 @@ rule humid:
         rev=rules.concat.output.rev,
         umi=rules.concat.output.umi,
     params:
-        cluster_method="-x" if config["cluster_method"] == "maximum" else "",
+        cluster_method="-e" if config["cluster_method"] == "maximum" else "",
         stack_size_kb=102400,
     output:
         forw="humid/{sample}/forward_dedup.fastq.gz",
