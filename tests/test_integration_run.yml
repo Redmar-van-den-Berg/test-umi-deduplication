@@ -6,6 +6,7 @@
     set -xe
 
     unxz -k tests/data/star/Genome.xz;
+    unxz -k tests/data/reference/hamlet-ref.fa.xz;
 
     snakemake \
       --reason \
@@ -19,7 +20,8 @@
       --snakefile Snakefile \
       --notemp
 
-      rm tests/data/star/Genome
+      rm tests/data/star/Genome;
+      rm tests/data/reference/hamlet-ref.fa;
       "
   files:
     - path: sample1/concat/forward.fastq.gz
@@ -66,6 +68,9 @@
         - UMI-tools 
         # The report should contain a section for STAR alignment statistics
         - STAR
+        # The report should countain a section for Picard insert size
+        # statistics
+        - Insert Size
         # The report should contain both samples
         - sample1
         - sample2
@@ -74,6 +79,8 @@
         - "based on data in:"
         # Hide UMI-Tools file names
         - "sample1/align/Aligned.sortedByCoord.out.bam"
+        # Clean up the sample names from Picard insert size statistics
+        - "sample1.insert_stats"
     - path: benchmarks/STAR_sample1.tsv
     - path: benchmarks/humid_sample1.tsv
     - path: benchmarks/umi_tools_sample1.tsv
@@ -94,6 +101,7 @@
     set -xe
 
     unxz -k tests/data/star/Genome.xz;
+    unxz -k tests/data/reference/hamlet-ref.fa.xz;
 
     snakemake \
       --reason \
@@ -107,6 +115,7 @@
       --snakefile Snakefile
 
     rm tests/data/star/Genome;
+    rm tests/data/reference/hamlet-ref.fa;
     "
   files:
     - path: sample1/concat/forward.fastq.gz
@@ -133,6 +142,7 @@
     set -xe
 
     unxz -k tests/data/star/Genome.xz;
+    unxz -k tests/data/reference/hamlet-ref.fa.xz;
 
     snakemake \
       --reason \
@@ -150,6 +160,7 @@
       --until humid umi_tools
 
       rm tests/data/star/Genome
+      rm tests/data/reference/hamlet-ref.fa;
       "
 
 - name: integration-maximum
@@ -160,6 +171,7 @@
     set -xe
 
     unxz -k tests/data/star/Genome.xz;
+    unxz -k tests/data/reference/hamlet-ref.fa.xz;
 
     snakemake \
       --reason \
@@ -177,4 +189,5 @@
       --until humid umi_tools
 
       rm tests/data/star/Genome
+      rm tests/data/reference/hamlet-ref.fa;
       "

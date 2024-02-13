@@ -396,3 +396,28 @@ rule gather_benchmarks:
               --column ${{column}} > benchmarks/${{column}}.tsv 2>> {log}
         done
         """
+
+
+rule insert_stats:
+    input:
+        bam=rules.align_vars.output.bam,
+        bai=rules.index_bamfile.output.bai,
+        ref=config["reference"],
+        ref_dict=config["reference_dict"],
+    output:
+        stats="{sample}/align/{sample}.insert_stats",
+        histo="{sample}/align/{sample}.insert_stats.pdf",
+    log:
+        "log/insert_stats.{sample}.txt",
+    threads: 1
+    container:
+        containers["picard"]
+    shell:
+        """
+        picard -Xmx4G CollectInsertSizeMetrics \
+            VALIDATION_STRINGENCY=LENIENT \
+            R={input.ref} \
+            I={input.bam} \
+            O={output.stats} \
+            H={output.histo} 2> {log}
+        """

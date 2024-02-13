@@ -4,3 +4,4 @@ sample_names_replace:
   "(.+) \\| align \\| Log.final.out": "\\1"
   "humid \\| (.+) \\| (.+)": "\\1"
   "(.+) \\| log \\| (.+)_umi_tools.log": "\\2"
+  "(.+) \\| align \\| (.+).insert_stats": "\\2"

@@ -36,6 +36,8 @@ of priority.
 | repeat               | Optional integer (default=1)| How many times the benchmark should be repeated   |
 | star_index           | Required folder             | STAR-index folder                                 |
 | gtf                  | Required file               | GTF file with transcripts, used by STAR           |
+| reference            | Required file               | Fasta file for the reference, used by Picard      |
+| reference_dict       | Required file               | Dict file for the reference, used by Picard       |
 | cluster_method       | "maximum" or "directional" (default) | Clustering method to use                 |
 
 ## Tests

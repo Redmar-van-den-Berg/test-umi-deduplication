@@ -1,5 +1,6 @@
 {
-  "reference": "tests/data/reference/ref.fa",
+  "reference": "tests/data/reference/hamlet-ref.fa",
+  "reference_dict": "tests/data/reference/hamlet-ref.dict",
   "star_index": "tests/data/star",
   "gtf": "tests/data/reference/hamlet-ref.gtf"
 }
