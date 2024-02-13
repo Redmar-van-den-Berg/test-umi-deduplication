@@ -5,3 +5,5 @@ sample_names_replace:
   "humid \\| (.+) \\| (.+)": "\\1"
   "(.+) \\| log \\| (.+)_umi_tools.log": "\\2"
   "(.+) \\| align \\| (.+).insert_stats": "\\2"
+  "concat \\| fastqc_(.+) \\| forward_fastqc.zip": "\\1"
+  "concat \\| fastqc_(.+) \\| reverse_fastqc.zip": "\\1"

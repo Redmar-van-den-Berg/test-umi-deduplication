@@ -10,6 +10,7 @@ that users understand how the changes affect the new version.
 
 v0.0.1
 ---------------------------
++ Add FastQC statistics
 + Add Picard insert size statistics
 + Rename UMI-Tools sample name in MultiQC
 + Add support for clustering method

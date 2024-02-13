@@ -46,6 +46,42 @@ rule concat:
         """
 
 
+rule fastqc:
+    """Runs FastQC"""
+    input:
+        fq1=rules.concat.output.forw,
+        fq2=rules.concat.output.rev,
+    output:
+        folder=directory("{sample}/concat/fastqc_{sample}"),
+        forw="{sample}/concat/fastqc_{sample}/forward_fastqc.zip",
+        rev="{sample}/concat/fastqc_{sample}/reverse_fastqc.zip",
+    params:
+        xms="4096M",
+        xmx="4096M",
+        fastqc_dir="usr/local/opt/fastqc-0.11.9",
+    log:
+        "log/fastqc_raw.{sample}.txt",
+    threads: 4
+    container:
+        containers["fastqc"]
+    shell:
+        """
+        mkdir -p {output.folder} tmp
+
+        FASTQC_DIR=/{params.fastqc_dir}
+        export CLASSPATH="$FASTQC_DIR:$FASTQC_DIR/sam-1.103.jar:$FASTQC_DIR/jbzip2-0.9.jar:$FASTQC_DIR/cisd-jhdf5.jar"
+
+        java -Djava.awt.headless=true -Xms{params.xms} -Xmx{params.xmx} \
+            -Dfastqc.output_dir={output.folder} \
+            -Dfastqc.io.tmpdir=tmp \
+            -Dfastqc.unzip=true \
+            -Dfastqc.nogroup=true \
+            -Dfastqc.threads={threads} \
+            uk.ac.babraham.FastQC.FastQCApplication \
+            {input.fq1:q} {input.fq2:q} 2> {log}
+        """
+
+
 rule humid:
     """Run HUMID on the fastq files"""
     input:

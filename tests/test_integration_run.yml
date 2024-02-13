@@ -71,6 +71,8 @@
         # The report should countain a section for Picard insert size
         # statistics
         - Insert Size
+        # The report should contain a section for FastQC
+        - FastQC
         # The report should contain both samples
         - sample1
         - sample2
@@ -81,6 +83,9 @@
         - "sample1/align/Aligned.sortedByCoord.out.bam"
         # Clean up the sample names from Picard insert size statistics
         - "sample1.insert_stats"
+        # Clean up the sample names from FastQC
+        - "forward_fastqc.zip"
+        - "reverse_fastqc.zip"
     - path: benchmarks/STAR_sample1.tsv
     - path: benchmarks/humid_sample1.tsv
     - path: benchmarks/umi_tools_sample1.tsv
