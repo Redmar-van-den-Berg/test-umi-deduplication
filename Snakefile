@@ -60,6 +60,9 @@ rule humid:
         rev="humid/{sample}/reverse_dedup.fastq.gz",
         umi="humid/{sample}/umi_dedup.fastq.gz",
         stats="humid/{sample}/stats.dat",
+        clusters="humid/{sample}/clusters.dat",
+        counts="humid/{sample}/counts.dat",
+        neigh="humid/{sample}/neigh.dat",
     log:
         "log/{sample}-humid.txt",
     benchmark:

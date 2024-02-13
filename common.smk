@@ -60,7 +60,9 @@ def get_umi(wildcards):
 
 def get_log_files():
     """Generate paths for each of the relevant log files"""
-    humid = [f"humid/{sample}/stats.dat" for sample in samples]
+    humid = list()
+    for category in ["stats", "clusters", "counts", "neigh"]:
+        humid += [f"humid/{sample}/{category}.dat" for sample in samples]
     umi_tools = [f"log/{sample}_umi_tools.log" for sample in samples]
     STAR = [f"{sample}/align/Log.final.out" for sample in samples]
     return humid + umi_tools + STAR
