@@ -59,6 +59,9 @@
       contains:
         # The report should contain a section for HUMID
         - HUMID
+        - Neighbour statistics
+        - Counts statistics
+        - Cluster statistics
         # The report should contain a section for UMI-Tools
         - UMI-tools 
         # The report should contain a section for STAR alignment statistics

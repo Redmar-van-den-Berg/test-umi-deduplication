@@ -4,7 +4,7 @@ containers = {
     "dnaio": "docker://quay.io/biocontainers/mulled-v2-2996a7d035117c4238b2b801e740a69df21d91e1:6b3ae5f1a97f370227e8134ba3efc0e318b288c3-0",
     "star": "docker://quay.io/biocontainers/star:2.7.10b--h9ee0642_0",
     "humid": "docker://quay.io/biocontainers/humid:1.0.2--h5f740d0_0",
-    "multiqc": "docker://quay.io/biocontainers/multiqc:1.15--pyhdfd78af_0",
+    "multiqc": "docker://quay.io/biocontainers/multiqc:1.20--pyhdfd78af_0",
     "picard": "docker://quay.io/biocontainers/picard:2.20.5--0",
     "umi-tools": "docker://quay.io/biocontainers/umi_tools:1.1.1--py38h0213d0e_1",
     "samtools": "docker://quay.io/biocontainers/mulled-v2-58936b48a08c4e06505165c6f560ec9460b431ea:ef260d10ee671f4c7bd8e783939839bb2e0b684e-0",
