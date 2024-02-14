@@ -29,7 +29,7 @@
       - benchmarks/cpu_time.tsv
       - rule multiqc_humid_after_umi_tools
       - rule multiqc_umi_tools_after_humid
-      - rule insert_stats
+      - rule picard_multiple_stats
       - rule fastqc
 
 - name: dry-run-subsamples

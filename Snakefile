@@ -434,7 +434,7 @@ rule gather_benchmarks:
         """
 
 
-rule insert_stats:
+rule picard_multiple_stats:
     input:
         bam=rules.align_vars.output.bam,
         bai=rules.index_bamfile.output.bai,
@@ -449,7 +449,7 @@ rule insert_stats:
         qual="{sample}/align/multiple_metrics.quality_by_cycle_metrics",
         qual_dist="{sample}/align/multiple_metrics.quality_distribution_metrics",
     log:
-        "log/insert_stats.{sample}.txt",
+        "log/picard_multiple_stats.{sample}.txt",
     threads: 1
     container:
         containers["picard"]
