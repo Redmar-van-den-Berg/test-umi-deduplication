@@ -73,7 +73,7 @@ def get_log_files():
     STAR = [f"{sample}/align/Log.final.out" for sample in samples]
 
     # Insert size statistics
-    insert = [f"{sample}/align/{sample}.insert_stats" for sample in samples]
+    insert = [f"{sample}/align/{sample}_multiple_metrics.insert_size_metrics" for sample in samples]
 
     # FastQC statistics
     forward = [

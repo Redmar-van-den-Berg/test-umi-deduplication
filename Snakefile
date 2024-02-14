@@ -440,9 +440,10 @@ rule insert_stats:
         bai=rules.index_bamfile.output.bai,
         ref=config["reference"],
         ref_dict=config["reference_dict"],
+    params:
+        prefix="{sample}/align/{sample}_multiple_metrics",
     output:
-        stats="{sample}/align/{sample}.insert_stats",
-        histo="{sample}/align/{sample}.insert_stats.pdf",
+        stats="{sample}/align/{sample}_multiple_metrics.insert_size_metrics",
     log:
         "log/insert_stats.{sample}.txt",
     threads: 1
@@ -450,10 +451,9 @@ rule insert_stats:
         containers["picard"]
     shell:
         """
-        picard -Xmx4G CollectInsertSizeMetrics \
+        picard -Xmx4G  CollectMultipleMetrics \
             VALIDATION_STRINGENCY=LENIENT \
             R={input.ref} \
             I={input.bam} \
-            O={output.stats} \
-            H={output.histo} 2> {log}
+            O={params.prefix} 2> {log}
         """
