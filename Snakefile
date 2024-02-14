@@ -441,7 +441,7 @@ rule insert_stats:
         ref=config["reference"],
         ref_dict=config["reference_dict"],
     params:
-        prefix="{sample}/align/multiple_metrics",
+        prefix=lambda wildcards, output: output.alignment_summary.split(".")[0],
     output:
         alignment_summary="{sample}/align/multiple_metrics.alignment_summary_metrics",
         inserts="{sample}/align/multiple_metrics.insert_size_metrics",

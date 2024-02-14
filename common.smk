@@ -58,10 +58,19 @@ def get_reverse(wildcards):
 def get_umi(wildcards):
     return get_fastq(wildcards, "umi")
 
+
 def get_picard_metrics():
     metrics = list()
-    for category in ["insert_size", "alignment_summary", "base_distribution_by_cycle", "quality_by_cycle", "quality_distribution"]:
-        metrics +=  [f"{sample}/align/multiple_metrics.{category}_metrics" for sample in samples]
+    for category in [
+        "insert_size",
+        "alignment_summary",
+        "base_distribution_by_cycle",
+        "quality_by_cycle",
+        "quality_distribution",
+    ]:
+        metrics += [
+            f"{sample}/align/multiple_metrics.{category}_metrics" for sample in samples
+        ]
 
     return metrics
 
