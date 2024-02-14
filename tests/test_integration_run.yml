@@ -83,7 +83,6 @@
         - "sample1/align/Aligned.sortedByCoord.out.bam"
         # Clean up the sample names from Picard insert size statistics
         - "multiple_metrics"
-        - "insert_size_metrics"
         # Clean up the sample names from FastQC
         - "forward_fastqc.zip"
         - "reverse_fastqc.zip"

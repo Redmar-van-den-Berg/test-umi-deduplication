@@ -443,7 +443,11 @@ rule insert_stats:
     params:
         prefix="{sample}/align/multiple_metrics",
     output:
-        stats="{sample}/align/multiple_metrics.insert_size_metrics",
+        alignment_summary="{sample}/align/multiple_metrics.alignment_summary_metrics",
+        inserts="{sample}/align/multiple_metrics.insert_size_metrics",
+        base_dist="{sample}/align/multiple_metrics.base_distribution_by_cycle_metrics",
+        qual="{sample}/align/multiple_metrics.quality_by_cycle_metrics",
+        qual_dist="{sample}/align/multiple_metrics.quality_distribution_metrics",
     log:
         "log/insert_stats.{sample}.txt",
     threads: 1

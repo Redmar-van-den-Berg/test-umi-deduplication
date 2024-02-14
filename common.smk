@@ -59,9 +59,11 @@ def get_umi(wildcards):
     return get_fastq(wildcards, "umi")
 
 def get_picard_metrics():
-    insert = [f"{sample}/align/multiple_metrics.insert_size_metrics" for sample in samples]
+    metrics = list()
+    for category in ["insert_size", "alignment_summary", "base_distribution_by_cycle", "quality_by_cycle", "quality_distribution"]:
+        metrics +=  [f"{sample}/align/multiple_metrics.{category}_metrics" for sample in samples]
 
-    return insert
+    return metrics
 
 
 def get_log_files():
