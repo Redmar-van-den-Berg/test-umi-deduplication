@@ -58,6 +58,11 @@ def get_reverse(wildcards):
 def get_umi(wildcards):
     return get_fastq(wildcards, "umi")
 
+def get_picard_metrics():
+    insert = [f"{sample}/align/multiple_metrics.insert_size_metrics" for sample in samples]
+
+    return insert
+
 
 def get_log_files():
     """Generate paths for each of the relevant log files"""
@@ -72,8 +77,8 @@ def get_log_files():
     # STAR log files
     STAR = [f"{sample}/align/Log.final.out" for sample in samples]
 
-    # Insert size statistics
-    insert = [f"{sample}/align/{sample}_multiple_metrics.insert_size_metrics" for sample in samples]
+    # Picard statistics
+    picard = get_picard_metrics()
 
     # FastQC statistics
     forward = [
@@ -84,7 +89,7 @@ def get_log_files():
     ]
     fastqc = forward + reverse
 
-    return humid + umi_tools + STAR + insert + fastqc
+    return humid + umi_tools + STAR + picard + fastqc
 
 
 def get_humid_after_umi_tools():

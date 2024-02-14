@@ -441,9 +441,9 @@ rule insert_stats:
         ref=config["reference"],
         ref_dict=config["reference_dict"],
     params:
-        prefix="{sample}/align/{sample}_multiple_metrics",
+        prefix="{sample}/align/multiple_metrics",
     output:
-        stats="{sample}/align/{sample}_multiple_metrics.insert_size_metrics",
+        stats="{sample}/align/multiple_metrics.insert_size_metrics",
     log:
         "log/insert_stats.{sample}.txt",
     threads: 1
