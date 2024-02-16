@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 
 import argparse
-import dnaio
-import xopen
 from collections import Counter
 
 NUC = {"A": "00", "C": "01", "G": "10", "T": "11"}
@@ -109,6 +107,8 @@ def main(fname, umi_size, alphabetic_file, descending_file):
 
 
 if __name__ == "__main__":
+    import dnaio
+    import xopen
     parser = argparse.ArgumentParser(
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
         description="Count UMIs in FastQ header",
