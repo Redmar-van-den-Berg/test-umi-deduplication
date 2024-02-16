@@ -12,8 +12,8 @@ def main(args):
     reverse = dnaio.open(args.reverse, opener=xopen.xopen)
 
     # Open the output files
-    fout = xopen.xopen(args.forward_out, 'wb')
-    rout = xopen.xopen(args.reverse_out, 'wb')
+    fout = xopen.xopen(args.forward_out, "wb")
+    rout = xopen.xopen(args.reverse_out, "wb")
 
     for f, u, r in zip(forward, umi, reverse):
         umi = u.sequence
@@ -27,14 +27,19 @@ def main(args):
         fout.write(f.fastq_bytes())
         rout.write(r.fastq_bytes())
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('forward', help='fastq.gz file with forward reads')
-    parser.add_argument('umi', help='fastq.gz file with UMI reads')
-    parser.add_argument('reverse', help='fastq.gz file with reverse reads')
-    parser.add_argument('--forward-out', required=True, help='Output file for forward reads')
-    parser.add_argument('--reverse-out', required=True, help='Output file for reverse reads')
+    parser.add_argument("forward", help="fastq.gz file with forward reads")
+    parser.add_argument("umi", help="fastq.gz file with UMI reads")
+    parser.add_argument("reverse", help="fastq.gz file with reverse reads")
+    parser.add_argument(
+        "--forward-out", required=True, help="Output file for forward reads"
+    )
+    parser.add_argument(
+        "--reverse-out", required=True, help="Output file for reverse reads"
+    )
 
     arguments = parser.parse_args()
     main(arguments)
