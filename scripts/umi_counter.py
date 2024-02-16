@@ -81,14 +81,31 @@ def write_descending(counts, umi_size, fname):
             print(umi, count, fraction, cumulative, cumulative_frac, file=fout, sep=",")
 
 
+def calculate_bias(counts, umi_size):
+    """Calculate the bias from a perfectly even distribution of UMI's"""
+    total = counts.total()
+    possible_umi = 4**umi_size
+    target_count = total / possible_umi
+    bias = 0
+
+    for _, count in counts.items():
+        bias += abs(count - target_count)
+
+    return bias, bias/total
+
+
 def main(fname, umi_size, alphabetic_file, descending_file):
     # Initialise the counter with all possible UMI's set to zero
     counts = Counter({x:0 for x in range(4**umi_size)})
     counts.update(fetch_umis_as_int(fname))
-    print(counts.most_common(10))
 
     write_alphabetic(counts, umi_size, alphabetic_file)
     write_descending(counts, umi_size, descending_file)
+
+    bias_umi, bias_umi_fraction = calculate_bias(counts, umi_size)
+
+    print(f"{bias_umi=}")
+    print(f"{bias_umi_fraction=}")
 
 
 if __name__ == "__main__":
