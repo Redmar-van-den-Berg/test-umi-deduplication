@@ -3,10 +3,7 @@
     - integration
   command: >
     bash -c "
-    set -xe
-
-    unxz -k tests/data/star/Genome.xz;
-    unxz -k tests/data/reference/hamlet-ref.fa.xz;
+    source tests/helper.sh
 
     snakemake \
       --reason \
@@ -19,9 +16,6 @@
       --configfile=tests/settings.json \
       --snakefile Snakefile \
       --notemp
-
-      rm tests/data/star/Genome;
-      rm tests/data/reference/hamlet-ref.fa;
       "
   files:
     - path: sample1/concat/forward.fastq.gz
@@ -104,10 +98,7 @@
     - integration
   command: >
     bash -c "
-    set -xe
-
-    unxz -k tests/data/star/Genome.xz;
-    unxz -k tests/data/reference/hamlet-ref.fa.xz;
+    source tests/helper.sh
 
     snakemake \
       --reason \
@@ -119,9 +110,6 @@
       --config pepfile=tests/pep/project_subsamples.yaml \
       --configfile=tests/settings.json \
       --snakefile Snakefile
-
-    rm tests/data/star/Genome;
-    rm tests/data/reference/hamlet-ref.fa;
     "
   files:
     - path: sample1/concat/forward.fastq.gz
@@ -145,10 +133,7 @@
     - integration
   command: >
     bash -c "
-    set -xe
-
-    unxz -k tests/data/star/Genome.xz;
-    unxz -k tests/data/reference/hamlet-ref.fa.xz;
+    source tests/helper.sh
 
     snakemake \
       --reason \
@@ -164,9 +149,6 @@
       --snakefile Snakefile \
       --notemp \
       --until humid umi_tools
-
-      rm tests/data/star/Genome
-      rm tests/data/reference/hamlet-ref.fa;
       "
   files:
     - path: log/sample1.humid.txt
@@ -179,10 +161,7 @@
     - integration
   command: >
     bash -c "
-    set -xe
-
-    unxz -k tests/data/star/Genome.xz;
-    unxz -k tests/data/reference/hamlet-ref.fa.xz;
+    source tests/helper.sh
 
     snakemake \
       --reason \
@@ -198,9 +177,6 @@
       --snakefile Snakefile \
       --notemp \
       --until humid umi_tools
-
-      rm tests/data/star/Genome
-      rm tests/data/reference/hamlet-ref.fa;
       "
   files:
     - path: log/sample1.humid.txt
