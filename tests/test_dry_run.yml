@@ -78,7 +78,7 @@
       --snakefile Snakefile
   stdout:
     must_not_contain_regex:
-      - "humid .* -e"
+      - "humid .* -x"
     contains_regex:
       - "umi_tools .* --method directional"
 
@@ -98,5 +98,5 @@
       --snakefile Snakefile
   stdout:
     contains_regex:
-      - "humid .* -e"
+      - "humid .* -x"
       - "umi_tools .* --method cluster"
