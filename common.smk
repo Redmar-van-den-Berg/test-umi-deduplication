@@ -3,7 +3,7 @@ containers = {
     # mulled container with dnaio=0.8.1 and pysam=0.19.0
     "dnaio": "docker://quay.io/biocontainers/mulled-v2-2996a7d035117c4238b2b801e740a69df21d91e1:6b3ae5f1a97f370227e8134ba3efc0e318b288c3-0",
     "star": "docker://quay.io/biocontainers/star:2.7.10b--h9ee0642_0",
-    "humid": "docker://quay.io/biocontainers/humid:1.0.2--h5f740d0_0",
+    "humid": "docker://quay.io/biocontainers/humid:1.0.4--hadf994f_0",
     "multiqc": "docker://quay.io/biocontainers/multiqc:1.20--pyhdfd78af_0",
     "fastqc": "docker://quay.io/biocontainers/fastqc:0.11.9--hdfd78af_1",
     "picard": "docker://quay.io/biocontainers/picard:2.27.4--hdfd78af_0",

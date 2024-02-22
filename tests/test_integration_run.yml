@@ -33,9 +33,10 @@
     - path: humid/sample1/stats.dat
       contains:
         - 'total:'
-    - path: log/sample1-humid.txt
+    - path: log/sample1.humid.txt
       contains:
-        - Reading data... done.
+        - Calculating neighbours using Hamming distance
+        - Calculating directional clusters
     - path: sample1/align/Aligned.sortedByCoord.out.bam
     - path: sample1/umi-tools/sample1.bam
     - path: umi-stats.tsv
@@ -167,6 +168,11 @@
       rm tests/data/star/Genome
       rm tests/data/reference/hamlet-ref.fa;
       "
+  files:
+    - path: log/sample1.humid.txt
+      contains:
+        - Calculating neighbours using Hamming distance
+        - Calculating directional clusters
 
 - name: integration-maximum
   tags:
@@ -196,3 +202,8 @@
       rm tests/data/star/Genome
       rm tests/data/reference/hamlet-ref.fa;
       "
+  files:
+    - path: log/sample1.humid.txt
+      contains:
+        - "Calculating neighbours using Hamming distance"
+        - "Calculating maximum clusters"
