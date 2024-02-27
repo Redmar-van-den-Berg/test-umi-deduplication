@@ -21,6 +21,7 @@ rule all:
         mutliqc_umi_tools_after_humid="multiqc_report_umi_tools_after_humid.html",
         benchmarks="benchmarks/s.tsv",
         counts=expand("{sample}/concat/bias.txt", sample=samples),
+        bias_summary="bias_summary.txt",
 
 
 rule concat:
@@ -143,6 +144,26 @@ rule umi_counter:
             --alphabetic {output.alphabetic} \
             --descending {output.descending} \
             > {output.bias} 2> {log}
+        """
+
+
+rule summarize_umi_counter:
+    input:
+        bias=lambda x: [f"{sample}/concat/bias.txt" for sample in samples],
+        summary=srcdir("scripts/bias_summary.py"),
+    params:
+        samples=samples,
+    output:
+        bias_summary="bias_summary.txt",
+    log:
+        "log/summarize_umi_counter.txt",
+    container:
+        containers["dnaio"]
+    shell:
+        """
+        python3 {input.summary} \
+            --samples {params.samples} \
+            --bias {input.bias} > {output.bias_summary} 2> {log}
         """
 
 
