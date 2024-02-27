@@ -34,7 +34,8 @@ def extract_umi(read):
 def fetch_umis(fname):
     with dnaio.open(fname, opener=xopen.xopen, mode="r") as fin:
         for read in fin:
-            yield extract_umi(read)
+            #yield extract_umi(read)
+            yield read.sequence
 
 
 def fetch_umis_as_int(fname):
@@ -46,7 +47,7 @@ def fetch_umis_as_int(fname):
 
 
 def write_alphabetic(counts, umi_size, fname):
-    total = counts.total()
+    total = sum(counts.values())
     cumulative = 0
     with open(fname, "wt") as fout:
         print("UMI", "count", "fraction", "cumulative", "cumulative_frac", file=fout, sep=",")
@@ -63,7 +64,7 @@ def write_alphabetic(counts, umi_size, fname):
 
 
 def write_descending(counts, umi_size, fname):
-    total = counts.total()
+    total = sum(counts.values())
     cumulative = 0
     with open(fname, "wt") as fout:
         print("UMI", "count", "fraction", "cumulative", "cumulative_frac", file=fout, sep=",")
@@ -81,7 +82,7 @@ def write_descending(counts, umi_size, fname):
 
 def calculate_bias(counts, umi_size):
     """Calculate the bias from a perfectly even distribution of UMI's"""
-    total = counts.total()
+    total = sum(counts.values())
     possible_umi = 4**umi_size
     target_count = total / possible_umi
     bias = 0

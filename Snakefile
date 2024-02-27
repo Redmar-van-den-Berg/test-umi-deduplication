@@ -20,6 +20,7 @@ rule all:
         multiqc_humid_after_umi_tools="multiqc_report_humid_after_umi_tools.html",
         mutliqc_umi_tools_after_humid="multiqc_report_umi_tools_after_humid.html",
         benchmarks="benchmarks/s.tsv",
+        counts=expand("{sample}/concat/bias.txt", sample=samples),
 
 
 rule concat:
@@ -117,6 +118,31 @@ rule humid:
             -d $folder \
             -s \
             {input.forw} {input.rev} {input.umi} 2> {log}
+        """
+
+
+rule umi_counter:
+    """Count UMI diversity"""
+    input:
+        umi=rules.concat.output.umi,
+        counter=srcdir("scripts/umi_counter.py"),
+    params:
+        umi_size=8,
+    output:
+        alphabetic="{sample}/concat/alphabetic.csv",
+        descending="{sample}/concat/descending.csv",
+        bias="{sample}/concat/bias.txt",
+    log:
+        "log/{sample}.count_umis.txt",
+    container:
+        containers["dnaio"]
+    shell:
+        """
+        python3 {input.counter} \
+            {input.umi} \
+            --alphabetic {output.alphabetic} \
+            --descending {output.descending} \
+            > {output.bias} 2> {log}
         """
 
 

@@ -31,6 +31,7 @@
       - rule multiqc_umi_tools_after_humid
       - rule picard_multiple_stats
       - rule fastqc
+      - rule umi_counter
 
 - name: dry-run-subsamples
   tags:

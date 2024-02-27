@@ -51,6 +51,9 @@
     - path: sample1/humid/umi-tools/align/Aligned.sortedByCoord.out.bam
     - path: sample1/humid/umi-tools/align/Aligned.sortedByCoord.out.bam.bai
     - path: sample1/humid/umi-tools/sample1.bam
+    - path: sample1/concat/bias.txt
+    - path: sample1/concat/alphabetic.csv
+    - path: sample1/concat/descending.csv
     # The pipeline should generate a MultiQC report file
     - path: multiqc_report.html
       contains:
