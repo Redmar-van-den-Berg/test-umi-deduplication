@@ -1,6 +1,8 @@
 include: "common.smk"
 
 
+localrules: summarize_umi_counter
+
 rule all:
     input:
         concat=expand(

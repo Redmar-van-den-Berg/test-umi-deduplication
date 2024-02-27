@@ -13,11 +13,12 @@ def read_bias(fname):
 def main(files, names):
     assert len(files) == len(names)
 
-    header = ["bias_umi", "bias_umi_fraction"]
+    header = ["sample", "bias_umi", "bias_umi_fraction"]
     print(*header, sep=',')
 
     for fname, name in zip(files, names):
         d = read_bias(fname)
+        d["sample"] = name
         print(*(d[field] for field in header), sep=',')
 
 if __name__ == "__main__":
