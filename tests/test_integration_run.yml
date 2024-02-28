@@ -95,6 +95,12 @@
       must_not_contain:
         - "integration-vanilla"
         - "sample1_umi_tools_after_humid"
+    - path: alphabetic_fraction.csv
+      contains:
+        - "UMI,sample1,sample2"
+    - path: cumulative_frac_desc.csv
+      contains:
+        - "sample1,sample2"
 
 - name: integration-subsamples
   tags:

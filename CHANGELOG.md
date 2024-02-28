@@ -10,6 +10,7 @@ that users understand how the changes affect the new version.
 
 v0.0.1
 ---------------------------
++ Group UMI counts for all samples
 + Add script to estimate UMI diversity
 + Add FastQC statistics
 + Add Picard insert size statistics

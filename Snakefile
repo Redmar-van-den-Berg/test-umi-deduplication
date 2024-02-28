@@ -26,6 +26,7 @@ rule all:
         benchmarks="benchmarks/s.tsv",
         counts=expand("{sample}/concat/bias.txt", sample=samples),
         bias_summary="bias_summary.txt",
+        frac_alphabetic="alphabetic_fraction.csv",
 
 
 rule concat:
@@ -151,7 +152,7 @@ rule umi_counter:
         """
 
 
-rule summarize_umi_counter:
+rule summarize_umi_bias:
     input:
         bias=lambda x: [f"{sample}/concat/bias.txt" for sample in samples],
         summary=srcdir("scripts/bias_summary.py"),
@@ -160,7 +161,7 @@ rule summarize_umi_counter:
     output:
         bias_summary="bias_summary.txt",
     log:
-        "log/summarize_umi_counter.txt",
+        "log/summarize_bias_counter.txt",
     container:
         containers["dnaio"]
     shell:
@@ -168,6 +169,33 @@ rule summarize_umi_counter:
         python3 {input.summary} \
             --samples {params.samples} \
             --bias {input.bias} > {output.bias_summary} 2> {log}
+        """
+
+
+rule summarize_umi_counter:
+    input:
+        alphabetic=lambda x: [f"{sample}/concat/alphabetic.csv" for sample in samples],
+        descending=lambda x: [f"{sample}/concat/descending.csv" for sample in samples],
+        group=srcdir("scripts/group_counter.py"),
+    output:
+        cumulative_frac_desc="cumulative_frac_desc.csv",
+        frac_alphabetic="alphabetic_fraction.csv",
+    log:
+        "log/summarize_umi_counter.txt",
+    container:
+        containers["dnaio"]
+    shell:
+        """
+        rm -f {log}
+
+        python3 {input.group} \
+            --field cumulative_frac \
+            {input.descending} > {output.cumulative_frac_desc} 2>> {log}
+
+        python3 {input.group} \
+            --field fraction \
+            --include-umi \
+            {input.alphabetic} > {output.frac_alphabetic} 2>> {log}
         """
 
 

@@ -32,8 +32,9 @@
       - rule picard_multiple_stats
       - rule fastqc
       - rule umi_counter
-      - rule summarize_umi_counter
+      - rule summarize_umi_bias
       - "--bias sample1/concat/bias.txt sample2/concat/bias.txt"
+      - rule summarize_umi_counter
 
 - name: dry-run-subsamples
   tags:
