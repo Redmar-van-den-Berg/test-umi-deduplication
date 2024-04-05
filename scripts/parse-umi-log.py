@@ -43,7 +43,7 @@ def parse(logfile):
     sample_name = logfile.split(".")[0]
 
     # The patterns we need to recognise the relevant lines
-    input_reads = ".*Reads: Input Reads: \d+, Chimeric read pair: \d+$"
+    input_reads = r".*INFO Reads: Input Reads: \d+,"
     output_reads = ".*Number of reads out: \d+$"
     dup_positions = ".*Total number of positions deduplicated: \d+$"
     mean_umi_per_pos = ".*Mean number of unique UMIs per position: \d+.\d+$"
@@ -60,7 +60,6 @@ def parse(logfile):
             if re.match(input_reads, line):
                 # We need to cut off the comma from the value
                 data["input_reads"] = int(spline[6].replace(",", ""))
-                data["chimeric_read_pair"] = int(spline[10])
 
             # Get the output reads
             if re.match(output_reads, line):

@@ -305,6 +305,7 @@ rule umi_tools:
 
         umi_tools dedup \
                 {params.cluster_method} \
+                --paired \
                 --stdin={input.bam} \
                 --stdout={output.bam} > {log}
         """
