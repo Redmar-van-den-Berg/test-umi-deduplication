@@ -39,6 +39,7 @@ of priority.
 | reference            | Required file               | Fasta file for the reference, used by Picard      |
 | reference_dict       | Required file               | Dict file for the reference, used by Picard       |
 | cluster_method       | "maximum" or "directional" (default) | Clustering method to use                 |
+| word_size            | Optional integer (default=24) | Word size for HUMID                             |
 
 ## Tests
 You can run the tests that accompany this pipeline with the following commands

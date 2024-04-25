@@ -35,6 +35,9 @@
       - rule summarize_umi_bias
       - "--bias sample1/concat/bias.txt sample2/concat/bias.txt"
       - rule summarize_umi_counter
+    contains_regex:
+      # Test that we pass the "word_size" configuration option to HUMID
+      - "humid .* -n 24"
 
 - name: dry-run-subsamples
   tags:
@@ -48,6 +51,7 @@
       --config
         pepfile=tests/pep/project_subsamples.yaml
         reference=tests/data/reference/hamlet-ref.fa.xz
+        word_size=32
       --snakefile Snakefile
   stdout:
     contains:
@@ -65,6 +69,8 @@
       # Test if specifying multiple fastq files using subsamples is handled
       - "cp tests/data/micro_R1.fq.gz tests/data/micro_R1.fq.gz sample1/concat/forward.fastq.gz"
       - "cp tests/data/micro_R1.fq.gz sample2/concat/forward.fastq.gz"
+      # Test if the specified word size is passed to HUMID
+      - "humid .* -n 32"
 
 - name: dry-run-directional-cluster
   tags:

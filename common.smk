@@ -14,6 +14,7 @@ containers = {
 default = dict()
 default["repeat"] = 1
 default["cluster_method"] = "directional"
+default["word_size"] = 24
 
 
 pepfile: config["pepfile"]

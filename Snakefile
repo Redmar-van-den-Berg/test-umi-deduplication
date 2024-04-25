@@ -98,6 +98,7 @@ rule humid:
     params:
         cluster_method="-x" if config["cluster_method"] == "maximum" else "",
         stack_size_kb=102400,
+        word_size=config["word_size"],
     output:
         forw="humid/{sample}/forward_dedup.fastq.gz",
         rev="humid/{sample}/reverse_dedup.fastq.gz",
@@ -123,6 +124,7 @@ rule humid:
             {params.cluster_method} \
             -d $folder \
             -s \
+            -n {params.word_size} \
             {input.forw} {input.rev} {input.umi} 2> {log}
         """
 
