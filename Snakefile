@@ -341,13 +341,11 @@ rule bam_to_fastq:
     input:
         forw=rules.concat.output.forw,
         rev=rules.concat.output.rev,
-        umi=rules.concat.output.umi,
         bam=rules.umi_tools.output.bam,
         src=srcdir("scripts/fastq-from-bam.py"),
     output:
         forw="{sample}/umi-tools/forward.fastq.gz",
         rev="{sample}/umi-tools/reverse.fastq.gz",
-        umi="{sample}/umi-tools/umi.fastq.gz",
     log:
         "log/{sample}.bam_to_fastq.txt",
     container:
@@ -355,8 +353,8 @@ rule bam_to_fastq:
     shell:
         """
         python3 {input.src} \
-            --fastq-in {input.forw} {input.rev} {input.umi} \
-            --fastq-out {output.forw} {output.rev} {output.umi} \
+            --fastq-in {input.forw} {input.rev} \
+            --fastq-out {output.forw} {output.rev} \
             --bam {input.bam} 2> {log}
         """
 
@@ -366,30 +364,15 @@ use rule humid as humid_after_umi_tools with:
     input:
         forw=rules.bam_to_fastq.output.forw,
         rev=rules.bam_to_fastq.output.rev,
-        umi=rules.bam_to_fastq.output.umi,
     output:
         forw="{sample}/umi-tools/humid/forward_dedup.fastq.gz",
         rev="{sample}/umi-tools/humid/reverse_dedup.fastq.gz",
-        umi="{sample}/umi-tools/humid/umi_dedup.fastq.gz",
         stats="{sample}/umi-tools/humid/stats.dat",
     log:
         stderr="log/{sample}.humid_after_umi_tools.txt",
         stdout="log/{sample}.humid_after_umi_tools.out",
     benchmark:
         repeat("benchmarks/humid_after_umi_tools_{sample}.tsv", config["repeat"])
-
-
-# Add the UMI's to the read name after running HUMID
-use rule add_umi as add_umi_after_humid with:
-    input:
-        forw=rules.humid.output.forw,
-        rev=rules.humid.output.rev,
-        add_umi=srcdir("scripts/add-umi.py"),
-    output:
-        forw="{sample}/humid/umi-tools/{sample}.umi.forward.fastq.gz",
-        rev="{sample}/humid/umi-tools/{sample}.umi.reverse.fastq.gz",
-    log:
-        "log/{sample}.add_umi_after_humid.txt",
 
 
 # Align the reads to the reference
