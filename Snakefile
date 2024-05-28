@@ -61,8 +61,8 @@ rule add_umi:
         rev=rules.concat.output.rev,
         add_umi=srcdir("scripts/add-umi.py"),
     output:
-        forw="{sample}/{sample}.umi.forward.fastq.gz",
-        rev="{sample}/{sample}.umi.reverse.fastq.gz",
+        forw="{sample}/forward.fastq.gz",
+        rev="{sample}/reverse.fastq.gz",
     log:
         "log/{sample}_add_umi.txt",
     container:
@@ -289,9 +289,11 @@ rule umi_tools:
         bam=rules.align_vars.output.bam,
         bai=rules.index_bamfile.output.bai,
     params:
-        cluster_method="--method cluster"
-        if config["cluster_method"] == "maximum"
-        else "--method directional",
+        cluster_method=(
+            "--method cluster"
+            if config["cluster_method"] == "maximum"
+            else "--method directional"
+        ),
     output:
         bam="{sample}/umi-tools/{sample}.bam",
     log:

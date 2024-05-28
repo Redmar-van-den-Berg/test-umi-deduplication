@@ -5,7 +5,6 @@ from collections import defaultdict
 
 import argparse
 import functools
-import pysam
 import sys
 import json
 
@@ -160,6 +159,7 @@ def write_unexplained(infile, outfile, unexplained):
     pysam.index(outfile)
 
 def main(args):
+    import pysam
     samfile = pysam.AlignmentFile(args.bam)
 
     readpairs = defaultdict(list)
