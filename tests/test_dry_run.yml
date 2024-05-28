@@ -52,7 +52,6 @@
       - sample1/umi-tools/sample1.bam
       - sample1/umi-tools/forward.fastq.gz
       - sample1/umi-tools/humid/forward_dedup.fastq.gz
-      - sample1/humid/umi-tools/sample1.umi.forward.fastq.gz
       - sample1/humid/umi-tools/align/Aligned.sortedByCoord.out.bam
       - sample1/humid/umi-tools/sample1.bam
       - benchmarks/s.tsv

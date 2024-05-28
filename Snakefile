@@ -54,6 +54,30 @@ rule concat:
         """
 
 
+rule add_umi:
+    input:
+        forw=rules.concat.output.forw,
+        umi=rules.concat.output.umi,
+        rev=rules.concat.output.rev,
+        add_umi=srcdir("scripts/add-umi.py"),
+    output:
+        forw="{sample}/{sample}.umi.forward.fastq.gz",
+        rev="{sample}/{sample}.umi.reverse.fastq.gz",
+    log:
+        "log/{sample}_add_umi.txt",
+    container:
+        containers["dnaio"]
+    shell:
+        """
+        python3 {input.add_umi} \
+                {input.forw} \
+                {input.umi} \
+                {input.rev} \
+                --forward-out {output.forw} \
+                --reverse-out {output.rev} 2> {log}
+        """
+
+
 rule fastqc:
     """Runs FastQC"""
     input:
@@ -93,9 +117,8 @@ rule fastqc:
 rule humid:
     """Run HUMID on the fastq files"""
     input:
-        forw=rules.concat.output.forw,
-        rev=rules.concat.output.rev,
-        umi=rules.concat.output.umi,
+        forw=rules.add_umi.output.forw,
+        rev=rules.add_umi.output.rev,
     params:
         cluster_method="-x" if config["cluster_method"] == "maximum" else "",
         stack_size_kb=102400,
@@ -103,13 +126,13 @@ rule humid:
     output:
         forw="humid/{sample}/forward_dedup.fastq.gz",
         rev="humid/{sample}/reverse_dedup.fastq.gz",
-        umi="humid/{sample}/umi_dedup.fastq.gz",
         stats="humid/{sample}/stats.dat",
         clusters="humid/{sample}/clusters.dat",
         counts="humid/{sample}/counts.dat",
         neigh="humid/{sample}/neigh.dat",
     log:
-        "log/{sample}.humid.txt",
+        stderr="log/{sample}.humid.txt",
+        stdout="log/{sample}.humid.out",
     benchmark:
         repeat("benchmarks/humid_{sample}.tsv", config["repeat"])
     container:
@@ -126,7 +149,7 @@ rule humid:
             -d $folder \
             -s \
             -n {params.word_size} \
-            {input.forw} {input.rev} {input.umi} 2> {log}
+            {input.forw} {input.rev} 2> {log.stderr} > {log.stdout}
         """
 
 
@@ -199,30 +222,6 @@ rule summarize_umi_counter:
             --field fraction \
             --include-umi \
             {input.alphabetic} > {output.frac_alphabetic} 2>> {log}
-        """
-
-
-rule add_umi:
-    input:
-        forw=rules.concat.output.forw,
-        umi=rules.concat.output.umi,
-        rev=rules.concat.output.rev,
-        add_umi=srcdir("scripts/add-umi.py"),
-    output:
-        forw="{sample}/{sample}.umi.forward.fastq.gz",
-        rev="{sample}/{sample}.umi.reverse.fastq.gz",
-    log:
-        "log/{sample}_add_umi.txt",
-    container:
-        containers["dnaio"]
-    shell:
-        """
-        python3 {input.add_umi} \
-                {input.forw} \
-                {input.umi} \
-                {input.rev} \
-                --forward-out {output.forw} \
-                --reverse-out {output.rev} 2> {log}
         """
 
 
@@ -382,7 +381,6 @@ use rule add_umi as add_umi_after_humid with:
     input:
         forw=rules.humid.output.forw,
         rev=rules.humid.output.rev,
-        umi=rules.humid.output.umi,
         add_umi=srcdir("scripts/add-umi.py"),
     output:
         forw="{sample}/humid/umi-tools/{sample}.umi.forward.fastq.gz",
@@ -394,8 +392,8 @@ use rule add_umi as add_umi_after_humid with:
 # Align the reads to the reference
 use rule align_vars as align_after_humid with:
     input:
-        fq1=rules.add_umi_after_humid.output.forw,
-        fq2=rules.add_umi_after_humid.output.rev,
+        fq1=rules.humid.output.forw,
+        fq2=rules.humid.output.rev,
         index=config["star_index"],
         gtf=config["gtf"],
     output:
