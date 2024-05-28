@@ -5,15 +5,16 @@ localrules:
     summarize_umi_counter,
 
 
-rule all:
+rule default:
     input:
-        concat=expand(
-            "humid/{sample}/forward_dedup.fastq.gz",
-            sample=samples,
-        ),
-        bam=expand("{sample}/umi-tools/{sample}.bam", sample=samples),
         stats="umi-stats.tsv",
-        fastq=expand("{sample}/umi-tools/forward.fastq.gz", sample=samples),
+        multiqc="multiqc_report.html",
+        benchmarks="benchmarks/s.tsv",
+
+
+rule extended:
+    input:
+        stats="umi-stats.tsv",
         humid_after_umi_tools=expand(
             "{sample}/umi-tools/humid/forward_dedup.fastq.gz", sample=samples
         ),

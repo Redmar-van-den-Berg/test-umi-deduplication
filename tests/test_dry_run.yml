@@ -1,4 +1,4 @@
-- name: dry-run-vanilla
+- name: dry-run-default
   tags:
     - dry-run
   command: >
@@ -11,6 +11,37 @@
         pepfile=tests/pep/project_config.yaml
         reference=tests/data/reference/hamlet-ref.fa.xz
       --snakefile Snakefile
+  stdout:
+    contains:
+      - sample1/concat/forward.fastq.gz
+      - humid/sample1/forward_dedup.fastq.gz
+      - sample1/align/Aligned.sortedByCoord.out.bam
+      - sample1/align/Aligned.sortedByCoord.out.bam.bai
+      - sample1/sample1.umi.forward.fastq.gz
+      - sample1/umi-tools/sample1.bam
+      - benchmarks/s.tsv
+      - benchmarks/max_rss.tsv
+      - benchmarks/cpu_time.tsv
+      - rule picard_multiple_stats
+      - rule fastqc
+    contains_regex:
+      # Test that we pass the "word_size" configuration option to HUMID
+      - "humid .* -n 24"
+
+- name: dry-run-extended
+  tags:
+    - dry-run
+  command: >
+    snakemake
+      --dryrun
+      --reason
+      --printshellcmds
+      --configfile=tests/settings.json
+      --config
+        pepfile=tests/pep/project_config.yaml
+        reference=tests/data/reference/hamlet-ref.fa.xz
+      --snakefile Snakefile
+      --until extended
   stdout:
     contains:
       - sample1/concat/forward.fastq.gz
@@ -38,7 +69,6 @@
     contains_regex:
       # Test that we pass the "word_size" configuration option to HUMID
       - "humid .* -n 24"
-
 - name: dry-run-subsamples
   tags:
     - dry-run

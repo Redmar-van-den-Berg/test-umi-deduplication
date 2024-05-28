@@ -41,6 +41,19 @@ of priority.
 | cluster_method       | "maximum" or "directional" (default) | Clustering method to use                 |
 | word_size            | Optional integer (default=24) | Word size for HUMID                             |
 
+## Default and extended mode
+There are currently two ways to run the pipeline. By default, it will generate
+the most common and useful output files.
+
+By passing the `--until extended` option to Snakemake, the extended version of
+the pipeline will run, which adds additional analysis which are usually not
+needed:
+1. Run UMI-Tools on the output of HUMID, and compare the results
+2. Run HUMID on the output of UMI-Tools, and compare the results
+3. Analyse and compare the UMI usage for each sample against all possible UMIs
+   for a given legth.
+4. Generate a separate MultiQC report for 1 and 2
+
 ## Tests
 You can run the tests that accompany this pipeline with the following commands
 

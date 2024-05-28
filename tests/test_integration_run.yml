@@ -1,4 +1,4 @@
-- name: integration-vanilla
+- name: integration-default
   tags:
     - integration
   command: >
@@ -42,18 +42,6 @@
     - path: sample1/sample1.umi.forward.fastq.gz
       contains:
         - '@ERR2438055.20253_CCCCCCCC'
-    - path: sample1/umi-tools/forward.fastq.gz
-    - path: sample1/umi-tools/reverse.fastq.gz
-    - path: sample1/umi-tools/umi.fastq.gz
-    - path: sample1/umi-tools/humid/forward_dedup.fastq.gz
-    - path: sample1/umi-tools/humid/stats.dat
-    - path: sample1/humid/umi-tools/sample1.umi.forward.fastq.gz
-    - path: sample1/humid/umi-tools/align/Aligned.sortedByCoord.out.bam
-    - path: sample1/humid/umi-tools/align/Aligned.sortedByCoord.out.bam.bai
-    - path: sample1/humid/umi-tools/sample1.bam
-    - path: sample1/concat/bias.txt
-    - path: sample1/concat/alphabetic.csv
-    - path: sample1/concat/descending.csv
     # The pipeline should generate a MultiQC report file
     - path: multiqc_report.html
       contains:
@@ -90,6 +78,41 @@
     - path: benchmarks/s.tsv
     - path: benchmarks/max_rss.tsv
     - path: benchmarks/cpu_time.tsv
+
+- name: integration-extended
+  tags:
+    - integration
+  command: >
+    bash -c "
+    source tests/helper.sh
+
+    snakemake \
+      --reason \
+      --printshellcmds \
+      --jobs \
+      --latency-wait 5 \
+      --use-singularity --singularity-args ' --cleanenv --bind /tmp' \
+      --singularity-prefix '~/.singularity/cache/snakemake' \
+      --config pepfile=tests/pep/project_config.yaml \
+      --configfile=tests/settings.json \
+      --snakefile Snakefile \
+      --notemp \
+      --until extended
+      "
+  files:
+    - path: sample1/umi-tools/forward.fastq.gz
+    - path: sample1/umi-tools/reverse.fastq.gz
+    - path: sample1/umi-tools/umi.fastq.gz
+    - path: sample1/umi-tools/humid/forward_dedup.fastq.gz
+    - path: sample1/umi-tools/humid/stats.dat
+    - path: sample1/humid/umi-tools/sample1.umi.forward.fastq.gz
+    - path: sample1/humid/umi-tools/align/Aligned.sortedByCoord.out.bam
+    - path: sample1/humid/umi-tools/align/Aligned.sortedByCoord.out.bam.bai
+    - path: sample1/humid/umi-tools/sample1.bam
+    - path: sample1/concat/bias.txt
+    - path: sample1/concat/alphabetic.csv
+    - path: sample1/concat/descending.csv
+    # The pipeline should generate a MultiQC report file
     - path: multiqc_report_humid_after_umi_tools.html
     - path: multiqc_report_umi_tools_after_humid.html
       must_not_contain:
