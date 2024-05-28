@@ -104,12 +104,10 @@
   files:
     - path: sample1/umi-tools/forward.fastq.gz
     - path: sample1/umi-tools/reverse.fastq.gz
-    - path: sample1/umi-tools/umi.fastq.gz
     - path: sample1/umi-tools/humid/forward_dedup.fastq.gz
     - path: sample1/umi-tools/humid/stats.dat
-    - path: sample1/humid/umi-tools/sample1.umi.forward.fastq.gz
     - path: sample1/humid/umi-tools/align/Aligned.sortedByCoord.out.bam
-      md5sum: b6b3c29187546e262046bbc72c1d479d
+      md5sum: e8a8027fe3f46b87f5f8f70620cf4a1c
     - path: sample1/humid/umi-tools/align/Aligned.sortedByCoord.out.bam.bai
     - path: sample1/humid/umi-tools/sample1.bam
     - path: sample1/concat/bias.txt
