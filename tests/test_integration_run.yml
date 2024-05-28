@@ -108,6 +108,7 @@
     - path: sample1/umi-tools/humid/stats.dat
     - path: sample1/humid/umi-tools/sample1.umi.forward.fastq.gz
     - path: sample1/humid/umi-tools/align/Aligned.sortedByCoord.out.bam
+      md5sum: 2d06f565e39d52fd6c10eb076c7270f7
     - path: sample1/humid/umi-tools/align/Aligned.sortedByCoord.out.bam.bai
     - path: sample1/humid/umi-tools/sample1.bam
     - path: sample1/concat/bias.txt
