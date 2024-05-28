@@ -371,7 +371,8 @@ use rule humid as humid_after_umi_tools with:
         umi="{sample}/umi-tools/humid/umi_dedup.fastq.gz",
         stats="{sample}/umi-tools/humid/stats.dat",
     log:
-        "log/{sample}.humid_after_umi_tools.txt",
+        stderr="log/{sample}.humid_after_umi_tools.txt",
+        stdout="log/{sample}.humid_after_umi_tools.out",
     benchmark:
         repeat("benchmarks/humid_after_umi_tools_{sample}.tsv", config["repeat"])
 
