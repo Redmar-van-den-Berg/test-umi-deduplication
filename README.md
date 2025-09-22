@@ -4,7 +4,7 @@
 ![Commits since latest release](https://img.shields.io/github/commits-since/redmar-van-den-berg/test-umi-deduplication/latest)
 
 # test-umi-deduplication
-A pipeline to test different methods of UMI deduplication
+A pipeline to compare the UMI deduplication performance of HUMID and UMI-Tools.
 
 ## Installation
 Download the repository from github
@@ -70,4 +70,4 @@ pytest --kwd --tag integration
 
 ## Troubleshooting
 If HUMID crashes when using the `maximum` clustering method, try increasing the
-stack_size_kb` parameter of the `humid` rule.
+`stack_size_kb` parameter of the `humid` rule.
